@@ -20,6 +20,16 @@
         "9) a importação e a exportação de padrões analíticos à base das substâncias butorfanol, morinamida, tapentadol e viminol, em que a quantidade do ativo sujeito a controle especial não exceda 500 mg por unidade, não requer Autorização de Importação e Autorização de Exportação, respectivamente. O disposto neste adendo também se aplica aos padrões analíticos à base dos sais, éteres, ésteres e isômeros, assim como dos sais de éteres, de ésteres e de isômeros, das substâncias citadas, a menos que sejam explicitamente excetuados ou constantes de listas de controle mais restrito e desde que a quantidade do ativo sujeito a controle especial não ultrapasse o limite especificado.",
         "10) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [
+          "dextrometorfano",
+          "dextrorfano"
+        ],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Notificação de Receita \"A\"",
       "sigla": "A1",
       "substancias": [
@@ -614,6 +624,13 @@
         "8) a importação e a exportação de padrões analíticos à base das substâncias nalbufina e tramadol, em que a quantidade do ativo sujeito a controle especial não exceda 500 mg por unidade, não requer Autorização de Importação e Autorização de Exportação, respectivamente. O disposto neste adendo também se aplica aos padrões analíticos à base dos sais, éteres, ésteres e isômeros, assim como dos sais de éteres, de ésteres e de isômeros, das substâncias citadas, a menos que sejam explicitamente excetuados ou constantes de listas de controle mais restrito e desde que a quantidade do ativo sujeito a controle especial não ultrapasse o limite especificado.",
         "9) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Notificação de Receita \"A\"",
       "sigla": "A2",
       "substancias": [
@@ -710,6 +727,13 @@
         "11) estão sujeitos aos controles desta Lista a importação e a distribuição da espécie vegetal Cannabis sativa L., do extrato, do fitofármaco CBD, do produto intermediário a granel e na embalagem primária obtidos a partir desta espécie vegetal, para fins de pesquisa, desenvolvimento e fabricação de insumo farmacêutico, de produtos de Cannabis e de medicamentos, bem como a exportação destes.",
         "12) os produtos de Cannabis regularizados nos termos da Resolução da Diretoria Colegiada - RDC nº 1.015, de 2 de fevereiro de 2026, ou de norma que venha a substituí-la, que apresentem teor de tetrahidrocanabinol (THC) menor ou igual a 0,2%, estão sujeitos à prescrição em Receita de Controle Especial."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeita à Notificação de Receita \"A\"",
       "sigla": "A3",
       "substancias": [
@@ -816,6 +840,13 @@
         "15) O medicamento contendo a substância escetamina em spray para uso por via nasal deve ser administrado em estabelecimentos de saúde sob observação de um profissional de saúde e o paciente deve ser monitorado até ser considerado clinicamente estável e pronto para deixar o estabelecimento.",
         "16) os medicamentos que contenham carisoprodol estão sujeitos à VENDA SOB PRESCRIÇÃO SEM RETENÇÃO DE RECEITA."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Notificação de Receita \"B\"",
       "sigla": "B1",
       "substancias": [
@@ -1410,6 +1441,13 @@
         "6) A importação e a exportação de padrões analíticos à base de sibutramina, em que a quantidade do ativo sujeito a controle especial não exceda 500 mg por unidade, não requer Autorização de Importação e Autorização de Exportação, respectivamente. O disposto neste adendo também se aplica aos padrões analíticos à base dos sais, éteres, ésteres e isômeros, assim como dos sais de éteres, de ésteres e de isômeros, da substância citada, a menos que sejam explicitamente excetuados ou constantes de listas de controle mais restrito e desde que a quantidade do ativo sujeito a controle especial não ultrapasse o limite especificado.",
         "7) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Notificação de Receita \"B2\"",
       "sigla": "B2",
       "substancias": [
@@ -1482,6 +1520,13 @@
         "14) excetuam-se das disposições legais da Resolução da Diretoria Colegiada - RDC nº 22, de 29 de abril de 2014, ou norma que vier a substitui-la, no tocante à transmissão de dados para o Sistema Nacional de Gerenciamento de Produtos Controlados (SNGPC), os medicamentos contendo a substância molnupiravir que possuam, exclusivamente, Autorização temporária de Uso Emergencial (AUE). Neste caso, a movimentação e o controle do estoque do medicamento devem ser mantidos apenas por meio de livro de registro do estabelecimento, pelos prazos previstos na Portaria SVS/MS nº 344/98 ou norma que vier a substitui-la.",
         "15) está sujeita aos controles desta Lista a espécie vegetal Cannabis sativa L. que comprovadamente produza teor de tetrahidrocanabinol (THC) menor ou igual a 0,3%, nos termos do Adendo 13 da Lista E."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Receita de Controle Especial em duas vias",
       "sigla": "C1",
       "substancias": [
@@ -2779,6 +2824,13 @@
         "3) excetuam-se dos controles referentes a esta Lista os isômeros relacionados nominalmente em outra Lista deste regulamento.",
         "4) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Notificação de Receita Especial",
       "sigla": "C2",
       "substancias": [
@@ -2822,6 +2874,13 @@
         "3) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham.",
         "4) o controle das substâncias lenalidomida e pomalidomida e dos medicamentos que as contenham deve ser realizado mediante o atendimento dos requisitos constantes da RDC nº 191, de 11 de dezembro de 2017, ou norma que vier a substitui-la."
       ],
+      "derivados": {
+        "esteres": false,
+        "eteres": false,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Notificação de Receita Especial",
       "sigla": "C3",
       "substancias": [
@@ -2856,6 +2915,13 @@
         "4) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham.",
         "5) excetua-se das disposições legais deste Regulamento Técnico a substância salicilato de butil octil."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "Sujeitas à Receita de Controle Especial em duas vias",
       "sigla": "C5",
       "substancias": [
@@ -3069,6 +3135,13 @@
         "9) ficam também sob controle desta Lista os ésteres metílico, etílico, propílico, isopropílico, butílico, isobutílico, sec-butílico e terc-butílico do ácido P-2-P metil glicídico.",
         "10) óleos contendo safrol com concentração individual igual ou inferior a 4% (quatro por cento), quando utilizados para fins industriais ou científicos legítimos, estão isentos da fixação de Cota de Importação, de Autorização de Importação e de Autorização de Exportação, previstas na Resolução da Diretoria Colegiada - RDC nº 659, de 30 de março de 2022 e em suas atualizações."
       ],
+      "derivados": {
+        "esteres": false,
+        "eteres": false,
+        "excecoes": [],
+        "isomeros": false,
+        "sais": true
+      },
       "descricao": "Sujeitas à Receita Médica sem Retenção",
       "sigla": "D1",
       "substancias": [
@@ -3309,6 +3382,13 @@
         "2) o insumo químico ou substância clorofórmio está proibido para uso em medicamentos.",
         "3) quando os insumos desta Lista forem utilizados para fins de fabricação de produtos sujeitos a vigilância sanitária, as empresas devem atender a legislação sanitária específica."
       ],
+      "derivados": {
+        "esteres": false,
+        "eteres": false,
+        "excecoes": [],
+        "isomeros": false,
+        "sais": false
+      },
       "descricao": "Sujeitos a Controle do Ministério da Justiça e Segurança Pública",
       "sigla": "D2",
       "substancias": [
@@ -3411,6 +3491,13 @@
         "16) excetuam-se dos controles referentes a esta Lista os produtos de Cannabis regularizados nos termos da Resolução da Diretoria Colegiada - RDC nº 1.015, de 2 de fevereiro de 2026, ou de norma que vier a substituí-la, os medicamentos à base de Cannabis registrados na Anvisa, os produtos veterinários à base de Cannabis com finalidade medicinal regularizados junto ao Ministério da Agricultura e Pecuária (MAPA), bem como o material vegetal, o extrato, o fitofármaco CBD e o produto intermediário a granel e na embalagem primária obtidos da espécie vegetal Cannabis sativa L. destinados à fabricação destes, os quais estão sujeitos aos controles da Lista A3.",
         "17) excetuam-se dos controles referentes a esta Lista a importação e a distribuição da espécie vegetal Cannabis sativa L., do extrato, do fitofármaco CBD, do produto intermediário a granel e na embalagem primária, obtidos a partir dessa espécie vegetal, para fins de pesquisa, desenvolvimento e fabricação de insumo farmacêutico, de produtos de Cannabis e de medicamentos, bem como a exportação desses itens, sendo aplicáveis os controles da Lista A3."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "",
       "sigla": "E",
       "substancias": [
@@ -3478,6 +3565,13 @@
         "3) exclui-se da proibição o uso médico-veterinário das substâncias carfentanil e etorfina, desde que devidamente autorizado pelo Ministério da Agricultura, Pecuária e Abastecimento e atendidos os demais requisitos de controle estabelecidos pelas legislações vigentes.",
         "4) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": true,
+        "eteres": true,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "LISTA DAS SUBSTÂNCIAS DE USO PROSCRITO NO BRASIL",
       "sigla": "F1",
       "substancias": [
@@ -3974,6 +4068,13 @@
         "16) A importação e a exportação de padrões analíticos à base das substâncias 1-(1,2-DIFENILETIL)PIRROLIDINA, 1B-LSD, 1cP-LSD, 1P-LSD, 2C-C, 2C-D, 2C-E, 2C-F, 2C-I, 2C-T-2, 2C-T-7, 2-MEO-DIFENIDINA, 3-FLUOROFENMETRAZINA, 3-MeO-PCP, 4-AcO-DET; 4-AcO-DMT, 4AcO-MET, 4-BROMOMETCATINONA, 4-Cl-ALFA-PVP, 4-CLOROMETCATINONA, 4-FLUOROMETCATINONA, 4-HO-DET, 4-HO-MIPT, 4-MEAPP, 5-APB, 5-APDB, 5C-MDA-19, 5-EAPB, 5F-AB-PFUPPYCA, 5F-MDA-19, 5-IAI, 5-MAPDB, 5-MeO-AMT, 5-MeO-DALT, 5-MeO-DIPT, 5-MeO-DMT, 5-MeO-MIPT, 25B-NBOH, 25C-NBF, 25C-NBOH, 25D-NBOME, 25E-NBOH, 25E-NBOME, 25H-NBOH, 25H-NBOME, 25I-NBF, 25I-NBOH, 25N-NBOME, 25P-NBOME, 25T2-NBOME, 25T4-NBOME, 25T7-NBOME, 30C-NBOME, ADB-5Br-INACA, ADB-FUBIATA, ADB-INACA, AKB48, ALD-52, ALFA-EAPP, ALFA-D2PV, AMT, BETACETO-DMBDB, BZO-4en-POXIZID, BZO-CHMOXIZID, BZO-HEPOXIZID, CH-PIATA, CLOBENZOREX, DESALQUILGIDAZEPAM, DIIDRO-LSD, DIFENIDINA, DIMETILONA, DMAA, DMBA, DOC, DOI, EAM-2201, ERGINA, JWH-071, JWH-072, JWH-081, JWH-098, JWH-122, JWH-210, JWH-250, JWH-251, JWH-252, JWH-253, MAM-2201, MAM-2201 N-(4-HIDROXIPENTIL), MAM-2201 N-(5-CLOROPENTIL), MCPP, MDA-19, MDAI, MDMB-5Br-INACA, MDMB-INACA, METALILESCALINA, N-ACETIL-3,4-MDMC, N-ETILCATINONA, N-ETILHEXEDRONA, NMDMSB, PENTILONA, RH-34, SALVINORINA A, TH-PVP e TFMPP, em que a quantidade do ativo sujeito a controle especial não exceda 500 mg por unidade, não requer Autorização de Importação e Autorização de Exportação, respectivamente. O disposto neste adendo também se aplica aos padrões analíticos à base dos sais e isômeros das substâncias citadas, a menos que sejam explicitamente excetuados ou constantes de listas de controle mais restrito e desde que a quantidade do ativo sujeito a controle especial não ultrapasse o limite especificado.",
         "17) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": false,
+        "eteres": false,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "LISTA DAS SUBSTÂNCIAS DE USO PROSCRITO NO BRASIL",
       "sigla": "F2",
       "substancias": [
@@ -5569,6 +5670,13 @@
         "2) excetuam-se dos controles referentes a esta Lista os isômeros relacionados nominalmente em outra Lista deste regulamento.",
         "3) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": false,
+        "eteres": false,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "LISTA DAS SUBSTÂNCIAS DE USO PROSCRITO NO BRASIL",
       "sigla": "F3",
       "substancias": [
@@ -5591,6 +5699,13 @@
         "4) A importação e a exportação de padrões analíticos à base de substâncias constantes desta Lista, em que a quantidade do ativo sujeito a controle especial não exceda 500 mg por unidade, não requer Autorização de Importação e Autorização de Exportação, respectivamente. O disposto neste adendo também se aplica aos padrões analíticos à base dos sais e isômeros das substâncias, a menos que sejam explicitamente excetuados ou constantes de listas de controle mais restrito e desde que a quantidade do ativo sujeito a controle especial não ultrapasse o limite especificado.",
         "5) excetuam-se dos controles referentes a esta Lista os isômeros não listados nominalmente e que sejam componentes de medicamentos registrados na Anvisa, bem como os medicamentos que os contenham."
       ],
+      "derivados": {
+        "esteres": false,
+        "eteres": false,
+        "excecoes": [],
+        "isomeros": true,
+        "sais": true
+      },
       "descricao": "LISTA DAS SUBSTÂNCIAS DE USO PROSCRITO NO BRASIL",
       "sigla": "F4",
       "substancias": [
