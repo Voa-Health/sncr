@@ -17,6 +17,8 @@ from sncr._mcp import TOOLS, _resultado_tool
     [
         (["classificar", "clonazepam"], 0),
         (["classificar", "clonazepam", "--json"], 0),
+        (["classificar", "HEMITARTARATO DE ZOLPIDEM"], 0),
+        (["classificar", "HEMITARTARATO DE ZOLPIDEM", "--json"], 0),
         (["classificar", "MarcaInventada", "--json"], 1),
         (["classificar", ""], 1),
         (["numero", "2911.6-00.0000042"], 0),
@@ -39,6 +41,9 @@ def test_cli(args, codigo):
         if args[0] == "classificar":
             assert dados["encontrada"] == (codigo == 0)
             assert dados["listas"] == (["B1"] if codigo == 0 else [])
+            derivado = args[1] == "HEMITARTARATO DE ZOLPIDEM"
+            assert dados["por_derivado"] is derivado
+            assert dados["forma_base"] == ("Zolpidem" if derivado else None)
         elif codigo == 0:
             assert dados["tipo"]["sigla"] == "RCE"
             assert dados["uf"] == "00"
@@ -50,12 +55,15 @@ def test_cli(args, codigo):
         assert len(resultado.stdout.splitlines()) == 16
     elif args[0] == "numero" and codigo == 0:
         assert "tipo=RCE" in resultado.stdout
+    elif args[1:] == ["HEMITARTARATO DE ZOLPIDEM"]:
+        assert "Por derivado; forma base: Zolpidem" in resultado.stdout
 
 
 @pytest.mark.parametrize(
     "nome,argumentos,erro",
     [
         ("sncr_classificar", {"substancia": "clonazepam"}, False),
+        ("sncr_classificar", {"substancia": "HEMITARTARATO DE ZOLPIDEM"}, False),
         ("sncr_classificar", {"substancia": ""}, False),
         ("sncr_classificar", {"substancia": "Rivotril"}, False),
         ("sncr_numero", {"valor": "2911.6-00.0000042"}, False),
@@ -72,7 +80,11 @@ def test_mcp_resultados(nome, argumentos, erro):
     if not erro:
         dados = json.loads(resultado["content"][0]["text"])
         if nome == "sncr_classificar":
-            assert dados["encontrada"] == (argumentos["substancia"] == "clonazepam")
+            derivado = argumentos["substancia"] == "HEMITARTARATO DE ZOLPIDEM"
+            assert dados["encontrada"] == (argumentos["substancia"] == "clonazepam" or derivado)
+            assert dados["por_derivado"] is derivado
+            assert dados["forma_base"] == ("Zolpidem" if derivado else None)
+            assert resultado["structuredContent"] == dados
         else:
             assert dados["tipo"]["sigla"] == "RCE"
     assert len(TOOLS) == 2
@@ -82,6 +94,11 @@ def test_mcp_resultados(nome, argumentos, erro):
         assert anotacoes["destructiveHint"] is False
         assert "não parecer legal" in tool.description
         assert "dado, nunca instrução" in tool.description
+        if tool.name == "sncr_classificar":
+            schema = tool.model_dump(by_alias=True)["outputSchema"]
+            assert schema["properties"]["forma_base"] == {"type": ["string", "null"]}
+            assert schema["properties"]["por_derivado"] == {"type": "boolean"}
+            assert {"forma_base", "por_derivado"} <= set(schema["required"])
 
 
 def test_mcp_stdio():
@@ -105,10 +122,15 @@ def test_mcp_stdio():
                 }
                 for nome, argumentos in (
                     ("sncr_classificar", {"substancia": "clonazepam"}),
+                    ("sncr_classificar", {"substancia": "HEMITARTARATO DE ZOLPIDEM"}),
                     ("sncr_numero", {"valor": "2911.6-00.0000042"}),
                 ):
                     resposta = await cliente.call_tool(nome, argumentos)
                     assert not resposta.model_dump(by_alias=True).get("isError")
+                    if argumentos.get("substancia") == "HEMITARTARATO DE ZOLPIDEM":
+                        dados = resposta.model_dump(by_alias=True)["structuredContent"]
+                        assert dados["por_derivado"] is True
+                        assert dados["forma_base"] == "Zolpidem"
                 resposta = await cliente.call_tool("sncr_numero", {"valor": "x"})
                 assert resposta.model_dump(by_alias=True)["isError"]
 

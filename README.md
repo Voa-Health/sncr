@@ -50,15 +50,18 @@ assert resultado.receituarios[0].sigla == "NRB"
 assert listas.classificar("Rivotril").encontrada is False
 ```
 
-A consulta compara somente nomes e sinônimos exatos, ignorando acentos,
+A consulta prioriza nomes e sinônimos exatos e reconhece formas derivadas
+previstas na tabela versionada e permitidas pelos adendos. Ignora acentos,
 maiúsculas e espaços repetidos. Não identifica nomes comerciais nem aproximações.
 O resultado inclui a atualização e o ato de origem.
 
 A classificação não substitui a leitura da norma. Os adendos são devolvidos em
-`pendencias` para revisão humana; não são aplicados automaticamente. Listas sem
+`pendencias` para revisão humana; somente as regras gerais de derivados são aplicadas. Listas sem
 receituário SNCR também devolvem a descrição do cabeçalho como pendência.
 Uma consulta não encontrada não significa receita simples ou ausência de controle.
 O catálogo pode ser lido com `listas.listas()` e `listas.lista("B1")`.
+O módulo `sncr.fhir` oferece `categorias(principios)` para elementos de
+`MedicationRequest.category` em FHIR R5, com códigos de lista e receituário versionados.
 
 - [Fontes de dados](DATA_SOURCES.md)
 - [Contribuição](CONTRIBUTING.md)

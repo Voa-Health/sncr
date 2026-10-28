@@ -2,7 +2,7 @@ from dataclasses import FrozenInstanceError, replace
 
 import pytest
 
-from sncr import listas, tipos
+from sncr import fhir, listas, tipos
 
 
 @pytest.mark.parametrize(
@@ -145,3 +145,58 @@ def test_derivado_sintetico(monkeypatch, consulta, sigla, excecoes, esperado):
     encontradas, base = listas._por_derivado(consulta)
     assert bool(encontradas) is esperado
     assert base == ("Exemplo" if esperado else None)
+
+
+@pytest.mark.parametrize(
+    "principios,siglas",
+    [
+        (["clonazepam", "morfina", "SubstanciaInventada"], ["A1", "B1"]),
+        (["clonazepam", "zolpidem"], ["B1"]),
+        (["HEMITARTARATO DE ZOLPIDEM"], ["B1"]),
+        (["SubstanciaInventada"], ["sem-lista"]),
+        ([], []),
+        (["", " \t"], []),
+        (["", "SubstanciaInventada"], ["sem-lista"]),
+        ([listas.lista("D2").substancias[0].nome], ["D2"]),
+    ],
+)
+def test_categorias_fhir(principios, siglas):
+    categorias = fhir.categorias(iter(principios))
+    assert [categoria["coding"][0]["code"] for categoria in categorias] == siglas
+    for categoria, sigla in zip(categorias, siglas, strict=True):
+        if sigla == "sem-lista":
+            assert categoria == {
+                "coding": [
+                    {
+                        "system": "https://github.com/Voa-Health/sncr/lista",
+                        "version": "101",
+                        "code": "sem-lista",
+                        "display": "Fora das listas da Portaria 344",
+                    }
+                ],
+                "text": "Fora das listas da Portaria 344",
+            }
+            continue
+        lista = listas.lista(sigla)
+        classificacao = listas.classificar(lista.substancias[0].nome)
+        assert categoria == {
+            "coding": [
+                {
+                    "system": "https://github.com/Voa-Health/sncr/lista",
+                    "version": "101",
+                    "code": sigla,
+                    "display": lista.titulo,
+                },
+                *[
+                    {
+                        "system": "https://github.com/Voa-Health/sncr/receituario",
+                        "version": "101",
+                        "code": tipo.sigla,
+                        "display": tipo.nome,
+                    }
+                    for tipo in tipos.para_lista(sigla)
+                ],
+            ],
+            "text": f"Portaria SVS/MS 344/98, Atualização nº 101: Lista {sigla}; "
+            + "; ".join(classificacao.pendencias),
+        }
