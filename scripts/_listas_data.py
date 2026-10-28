@@ -246,7 +246,53 @@ def extrair(conteudo: bytes) -> dict[str, Any]:
     conferir()
     if tuple(catalogo) != SIGLAS:
         raise ValueError("Conjunto de listas diferente do Anexo I esperado.")
+    for lista in catalogo.values():
+        lista["derivados"] = derivados(lista["adendos"])
     return catalogo
+
+
+def derivados(adendos: list[str]) -> dict[str, Any]:
+    """Extraia extensões gerais, distinguindo controles específicos reconhecidos."""
+    resultado: dict[str, Any] = dict.fromkeys(("sais", "eteres", "esteres", "isomeros"), False)
+    excecoes: set[str] = set()
+    for adendo in adendos:
+        texto = adendo.casefold()
+        if "ficam também sob controle" not in texto:
+            continue
+        geral = re.search(
+            r"(?:os |todos os )(sais.*?)"
+            r"(?:das substâncias (?:enumeradas acima|desta lista)|destas substâncias)",
+            texto,
+        )
+        if geral:
+            clausula = geral[1]
+            for chave, termo in (
+                ("sais", "sais"),
+                ("eteres", "éteres"),
+                ("esteres", "ésteres"),
+                ("isomeros", "isômeros"),
+            ):
+                resultado[chave] |= bool(re.search(rf"\b{termo}\b", clausula))
+            for trecho in re.findall(
+                r"\(exceto os isômeros (.*?)\),? (?:das substâncias)", clausula + "das substâncias"
+            ):
+                for nome in re.split(r",\s*(?:e o\s+)?", trecho):
+                    if re.fullmatch(r"[^\W\d_]+", nome, flags=re.UNICODE):
+                        excecoes.add(nome)
+        elif not any(
+            re.search(padrao, texto)
+            for padrao in (
+                r"sob controle as substâncias: .+",
+                r"sob controle todos os isômeros ópticos da substância .+",
+                r"sob controle desta lista os ésteres .+ do ácido .+",
+                r"sob controle desta lista (?:as substâncias canabimiméticas|as catinonas "
+                r"sintéticas|as feniletilaminas) que se enquadram nas? seguintes? "
+                r"classes? estrutura(?:l|is):",
+            )
+        ):
+            raise ValueError(f"Adendo de controle não reconhecido: {adendo}")
+    resultado["excecoes"] = sorted(excecoes)
+    return resultado
 
 
 def compilar(root: Path) -> bytes:
