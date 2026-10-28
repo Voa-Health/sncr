@@ -1,0 +1,38 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Voa-Health/sncr",
+  "title": "sncr",
+  "description": "Receituários de medicamentos controlados da Anvisa (SNCR).",
+  "version": "0.1.0",
+  "websiteUrl": "https://github.com/Voa-Health/sncr",
+  "repository": {
+    "url": "https://github.com/Voa-Health/sncr",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "sncr",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "--with",
+          "value": "sncr[mcp]==0.1.0",
+          "description": "Instala o extra MCP na mesma versão."
+        }
+      ],
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ]
+}
