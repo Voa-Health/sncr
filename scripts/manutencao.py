@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 from pathlib import Path
 
+from _listas_data import DESTINO, RELATORIO, atualizar, compilar, relatorio
 from _manutencao_quality import verificar
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,11 +15,23 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def fontes() -> int:
     """Atualize as fontes cadastradas."""
+    atualizar(ROOT)
     return 0
 
 
 def artefatos(*, check: bool) -> int:
     """Gere ou confira os artefatos das fontes cadastradas."""
+    esperado = compilar(ROOT)
+    arquivos = ((DESTINO, esperado), (RELATORIO, relatorio(json.loads(esperado))))
+    for caminho, conteudo in arquivos:
+        destino = ROOT / caminho
+        if check:
+            if not destino.is_file() or destino.read_bytes() != conteudo:
+                logging.error("Artefato desatualizado: %s", caminho)
+                return 1
+        else:
+            destino.parent.mkdir(parents=True, exist_ok=True)
+            destino.write_bytes(conteudo)
     return 0
 
 

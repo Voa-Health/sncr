@@ -66,8 +66,8 @@ def test_conteudo(tmp_path, monkeypatch, texto, permitido):
     assert _verificar_texto(tmp_path) == permitido
 
 
-@pytest.mark.parametrize("args", [["fontes"], ["artefatos"], ["artefatos", "--check"]])
-def test_comandos_sem_fontes(args):
+@pytest.mark.parametrize("args", [["artefatos", "--check"]])
+def test_comandos_offline(args):
     resultado = subprocess.run(
         [sys.executable, str(ROOT / "scripts/manutencao.py"), *args],
         capture_output=True,

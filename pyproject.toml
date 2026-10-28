@@ -44,6 +44,7 @@ packages = ["src/sncr"]
 [tool.hatch.build.targets.sdist]
 include = [
   "src/sncr",
+  "docs/extracao.md",
   "scripts",
   "tests",
   "README.md",

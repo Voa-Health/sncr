@@ -3,7 +3,8 @@
 ## Escopo
 
 Listas da Portaria SVS/MS nº 344/1998 e normas complementares da Anvisa.
-O catálogo associa tipos às siglas das listas; não inclui substâncias.
+O catálogo associa tipos às siglas das listas e inclui as designações nominais
+do Anexo I, com sinônimos e adendos para revisão humana.
 
 ## Registro das fontes
 
@@ -35,11 +36,38 @@ como código IBGE. Não há dígito verificador documentado nas fontes consultad
 
 ## Reprodução
 
+### Anexo I versionado
+
+- Ato: **RDC nº 1.036, de 09/07/2026**.
+- Número extraído do Anexo: **ATUALIZAÇÃO N. 101**.
+- [Texto oficial ISO-8859-1](https://anvisalegis.datalegis.net/action/ActionDatalegis.php?acao=abrirTextoAto&tipo=RDC&numeroAto=00001036&seqAto=000&valorAno=2026&orgao=RDC/DC/ANVISA/MS&codTipo=&desItem=&desItemFim=&cod_menu=1696&cod_modulo=134&pesquisa=true).
+- [Índice oficial de atualizações](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/controlados/lista-substancias).
+- Arquivo bruto: `scripts/fontes/rdc1036.html`, obtido em **2026-10-28**.
+- SHA-256: `bf6b1124d23cc9511673938fad3d6025af0d746318d014fefacbde5f42d903da`.
+- Metadados: `scripts/fontes/rdc1036.json`.
+
+O texto do ato oficial não tem proteção de direito autoral, conforme a
+Lei 9.610/98, art. 8º, IV. Essa condição não estende a licença do pacote
+a outros conteúdos ou elementos da página.
+
+Os itens são extraídos por bloco HTML, preservando textos inline e a ordem.
+Sinônimos vêm de um parêntese final balanceado no nome principal ou de
+alternativas após `ou`. Estas são separadas por `;`, preservando parênteses
+químicos; somente um `)` final desbalanceado da última alternativa é removido.
+O [relatório de extração](docs/extracao.md) lista todas as aplicações dessas regras.
+O número 55 se repete na lista F1 da fonte; ele não foi renumerado.
+Em F2 há 186 substâncias nominais. As classes estruturais seguintes são preservadas
+como pendências, não como nomes pesquisáveis; não se inferem correspondências químicas.
+
 ```sh
 uv run python scripts/manutencao.py fontes
 uv run python scripts/manutencao.py artefatos
 uv run python scripts/manutencao.py artefatos --check
 ```
 
-Os comandos de fontes e artefatos não alteram arquivos; não há geração automatizada de listas.
-A classificação não substitui a leitura da norma.
+O comando `fontes` baixa a página e atualiza o bruto e seus metadados.
+`artefatos` lê somente esses arquivos locais, verifica o hash e gera
+`src/sncr/data/listas.json` e `docs/extracao.md` deterministicamente.
+`artefatos --check` não escreve arquivos e falha se qualquer resultado divergir.
+O JSON é incluído no wheel; a consulta não usa rede.
+A classificação não substitui a leitura da norma; adendos exigem revisão humana.

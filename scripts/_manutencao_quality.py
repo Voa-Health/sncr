@@ -72,7 +72,10 @@ def _verificar_texto(root: Path) -> bool:
         except UnicodeDecodeError:
             continue
         for linha, texto_linha in enumerate(texto.splitlines(), start=1):
-            proibido = _TERMOS.search(texto_linha)
+            verificavel = re.sub(r"\bD[12]\b", "", texto_linha)
+            if relativo in {"src/sncr/data/listas.json", "docs/extracao.md"}:
+                verificavel = re.sub(r"\b(?:D3|R[123])\b", "", verificavel)
+            proibido = _TERMOS.search(verificavel)
             if proibido:
                 print(f"{relativo}:{linha}: termo não permitido: {proibido.group()}")
                 correto = False
