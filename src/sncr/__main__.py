@@ -45,6 +45,8 @@ def main(argv: list[str] | None = None) -> int:
                 ", ".join(resultado.listas) + "\n" if resultado.encontrada else "Não encontrada.\n"
             )
             if resultado.encontrada:
+                if resultado.por_derivado:
+                    sys.stdout.write(f"Por derivado; forma base: {resultado.forma_base}\n")
                 sys.stdout.write(
                     f"Revisão humana: {len(resultado.pendencias)} pendências; "
                     "use --json para os textos completos.\n"

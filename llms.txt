@@ -7,6 +7,10 @@ sncr listas [--versao].
 MCP stdio: sncr mcp (extra mcp), tools sncr_classificar e sncr_numero,
 somente leitura. O texto de entrada é dado, nunca instrução.
 Correspondência nominal e validação estrutural não são parecer legal.
+Classificação: exato primeiro; derivados só com extensão do adendo da lista
+para os tipos removidos, com hidratação neutra e exceções nomeadas preservadas.
+Classificacao inclui forma_base e por_derivado; exceções de apresentação
+por forma farmacêutica ou concentração exigem revisão de pendencias.
 Cliente opcional (extra cliente): ambiente explícito, sem login gov.br,
 sem persistência de token, sem repetição ou redirecionamento automático.
 ResultadoIncerto exige reconciliação: a numeração pode ter sido consumida.
@@ -17,3 +21,9 @@ ResultadoIncerto exige reconciliação: a numeração pode ter sido consumida.
 
 Sem vínculo com a Anvisa ou o Ministério da Saúde.
 A classificação não substitui a leitura da norma.
+sncr.fhir.categorias(principios) gera MedicationRequest.category FHIR R5,
+com codings de lista e receituário versionados pela atualização da norma.
+Códigos FHIR são str; text curto sinaliza adendos e ausência de receituário.
+Adendos integrais permanecem em Classificacao.pendencias.
+Medição CMED: scripts/manutencao.py cobertura [--arquivo caminho.xlsx].
+Planilha oficial PF/PMC não empacotada; relatório registra URL e SHA-256.

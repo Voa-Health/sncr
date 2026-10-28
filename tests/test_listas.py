@@ -1,8 +1,9 @@
+import json
 from dataclasses import FrozenInstanceError, replace
 
 import pytest
 
-from sncr import listas, tipos
+from sncr import fhir, listas, tipos
 
 
 @pytest.mark.parametrize(
@@ -28,6 +29,8 @@ def test_classificar(consulta, sigla, receituario):
     assert resultado.pendencias == listas.lista(sigla).adendos
     assert resultado.fonte.atualizacao == 101
     assert resultado.fonte.ato == "RDC nº 1.036, de 09/07/2026"
+    assert not resultado.por_derivado
+    assert resultado.forma_base is None
 
 
 @pytest.mark.parametrize(
@@ -86,3 +89,163 @@ def test_multiplas_listas_e_mesmo_receituario(monkeypatch):
     assert resultado.receituarios == (tipos.obter("NRA"), tipos.obter("NRB"))
     assert resultado.pendencias == tuple(a for lista in catalogo for a in lista.adendos)
     assert listas.classificar("Exemplo").listas == resultado.listas
+
+
+@pytest.mark.parametrize(
+    "consulta,sigla,base,receituario",
+    [
+        ("HEMITARTARATO DE ZOLPIDEM", "B1", "ZOLPIDEM", "NRB"),
+        ("CLORIDRATO DE METILFENIDATO", "A3", "METILFENIDATO", "NRA"),
+        ("SULFATO DE MORFINA PENTAIDRATADO", "A1", "MORFINA", "NRA"),
+    ],
+)
+def test_formas_derivadas(consulta, sigla, base, receituario):
+    resultado = listas.classificar(consulta)
+    assert resultado.listas == (sigla,)
+    assert resultado.receituarios == (tipos.obter(receituario),)
+    assert resultado.forma_base.casefold() == base.casefold()
+    assert resultado.por_derivado
+
+
+def test_derivados_nao_encontrados():
+    assert not listas.classificar("losartana").encontrada
+    for consulta in (
+        "BROMIDRATO DE DEXTROMETORFANO",
+        "CLORIDRATO DE LOSARTANA",
+        "CLORIDRATO DE " + listas.lista("D2").substancias[0].nome,
+    ):
+        resultado = listas.classificar(consulta)
+        assert not resultado.encontrada
+        assert not resultado.por_derivado
+        assert resultado.forma_base is None
+
+
+@pytest.mark.parametrize(
+    "consulta,sigla,excecoes,esperado",
+    [
+        ("cloridrato de exemplo", "A1", (), True),
+        ("cloridrato de alternativa", "A1", ("Exemplo",), False),
+        ("cloridrato de exemplo", "A1", ("exemplo",), False),
+        ("cloridrato de exemplo", "D2", (), False),
+        ("decanoato de exemplo", "D1", (), False),
+        ("cloridrato de decanoato de exemplo pentaidratado", "A1", (), True),
+        ("cloridrato de decanoato de exemplo", "D1", (), False),
+        ("exemplo anidro", "D2", (), True),
+        ("exemplo sodico", "A1", (), True),
+        ("", "A1", (), False),
+    ],
+)
+def test_derivado_sintetico(monkeypatch, consulta, sigla, excecoes, esperado):
+    item = listas.Substancia(1, "Exemplo", "Exemplo", ("alternativa",))
+    lista = replace(
+        listas.lista(sigla),
+        substancias=(item,),
+        derivados=replace(listas.lista(sigla).derivados, excecoes=excecoes),
+    )
+    monkeypatch.setattr(listas, "_INDICE", listas._indexar((lista,)))
+    encontradas, base = listas._por_derivado(consulta)
+    assert bool(encontradas) is esperado
+    assert base == ("Exemplo" if esperado else None)
+
+
+@pytest.mark.parametrize(
+    "principios,siglas",
+    [
+        (["clonazepam", "morfina", "SubstanciaInventada"], ["A1", "B1"]),
+        (["clonazepam", "zolpidem"], ["B1"]),
+        (["HEMITARTARATO DE ZOLPIDEM"], ["B1"]),
+        (["SubstanciaInventada"], ["sem-lista"]),
+        ([], []),
+        (["", " \t"], []),
+        (["", "SubstanciaInventada"], ["sem-lista"]),
+        ([listas.lista("D2").substancias[0].nome], ["D2"]),
+    ],
+)
+def test_categorias_fhir(principios, siglas):
+    categorias = fhir.categorias(iter(principios))
+    assert [categoria["coding"][0]["code"] for categoria in categorias] == siglas
+    for categoria, sigla in zip(categorias, siglas, strict=True):
+        assert all(type(coding["code"]) is str for coding in categoria["coding"])
+        if sigla == "sem-lista":
+            assert categoria == {
+                "coding": [
+                    {
+                        "system": "https://github.com/Voa-Health/sncr/lista",
+                        "version": "101",
+                        "code": "sem-lista",
+                        "display": "Fora das listas da Portaria 344",
+                    }
+                ],
+                "text": "Fora das listas da Portaria 344",
+            }
+            continue
+        lista = listas.lista(sigla)
+        texto = f"Portaria SVS/MS 344/98, Atualização nº 101: Lista {sigla}"
+        if lista.adendos:
+            texto += " (sujeita aos adendos da lista)"
+        if not tipos.para_lista(sigla):
+            texto += " — sem receituário de controle associado"
+        assert categoria == {
+            "coding": [
+                {
+                    "system": "https://github.com/Voa-Health/sncr/lista",
+                    "version": "101",
+                    "code": sigla,
+                    "display": lista.titulo,
+                },
+                *[
+                    {
+                        "system": "https://github.com/Voa-Health/sncr/receituario",
+                        "version": "101",
+                        "code": tipo.sigla.value,
+                        "display": tipo.nome,
+                    }
+                    for tipo in tipos.para_lista(sigla)
+                ],
+            ],
+            "text": texto,
+        }
+
+
+def test_categorias_fhir_json_estavel():
+    esperado = [
+        {
+            "coding": [
+                {
+                    "system": "https://github.com/Voa-Health/sncr/lista",
+                    "version": "101",
+                    "code": "B1",
+                    "display": listas.lista("B1").titulo,
+                },
+                {
+                    "system": "https://github.com/Voa-Health/sncr/receituario",
+                    "version": "101",
+                    "code": "NRB",
+                    "display": 'Notificação de Receita "B"',
+                },
+            ],
+            "text": "Portaria SVS/MS 344/98, Atualização nº 101: Lista B1"
+            " (sujeita aos adendos da lista)",
+        }
+    ]
+    serializado = json.dumps(esperado)
+    assert json.dumps(fhir.categorias(["clonazepam", "zolpidem"])) == serializado
+    assert json.dumps(fhir.categorias(["zolpidem", "clonazepam"])) == serializado
+
+
+@pytest.mark.parametrize("lista", listas.listas(), ids=lambda lista: lista.sigla)
+def test_categorias_fhir_textos_curtos(lista):
+    principio = lista.substancias[0].nome
+    antes = listas.classificar(principio).pendencias
+    categorias = fhir.categorias([principio])
+    assert all(len(categoria["text"]) < 200 for categoria in categorias)
+    assert all(
+        type(coding["code"]) is str for categoria in categorias for coding in categoria["coding"]
+    )
+    if lista.sigla == "D2":
+        categoria = next(c for c in categorias if c["coding"][0]["code"] == "D2")
+        assert categoria["text"] == (
+            "Portaria SVS/MS 344/98, Atualização nº 101: Lista D2"
+            " (sujeita aos adendos da lista) — sem receituário de controle associado"
+        )
+    assert listas.classificar(principio).pendencias == antes

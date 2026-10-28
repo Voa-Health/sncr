@@ -30,6 +30,7 @@ TOOLS = [
         name=definicao["name"],
         description=definicao["description"],
         inputSchema=definicao["inputSchema"],
+        outputSchema=definicao.get("outputSchema"),
         annotations=ToolAnnotations(  # type: ignore[call-arg]
             readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False
         ),
@@ -51,14 +52,15 @@ def _executar(nome: str, argumentos: dict[str, Any]) -> dict[str, Any]:
 
 def _resultado_tool(nome: str, argumentos: dict[str, Any]) -> CallToolResult:
     try:
-        resultado = _executar(nome, argumentos)
+        resultado = json.loads(json.dumps(_executar(nome, argumentos), ensure_ascii=False))
     except ValueError:
         return CallToolResult(  # type: ignore[call-arg]
             content=[TextContent(type="text", text="Argumentos ou numeração inválidos.")],
             isError=True,
         )
-    return CallToolResult(
-        content=[TextContent(type="text", text=json.dumps(resultado, ensure_ascii=False))]
+    return CallToolResult(  # type: ignore[call-arg]
+        content=[TextContent(type="text", text=json.dumps(resultado, ensure_ascii=False))],
+        structuredContent=resultado,
     )
 
 

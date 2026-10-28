@@ -1,0 +1,242 @@
+[
+  {
+    "texto": "CLORIDRATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "BROMIDRATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "HEMITARTARATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "TARTARATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "SULFATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "DIMESILATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "MESILATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "CITRATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "MALEATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "FUMARATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "SUCCINATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "ACETATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "FOSFATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "BESILATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "OXALATO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "CLORETO DE",
+    "posicao": "prefixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "DECANOATO DE",
+    "posicao": "prefixo",
+    "tipo": "ester"
+  },
+  {
+    "texto": "ENANTATO DE",
+    "posicao": "prefixo",
+    "tipo": "ester"
+  },
+  {
+    "texto": "PALMITATO DE",
+    "posicao": "prefixo",
+    "tipo": "ester"
+  },
+  {
+    "texto": "UNDECILATO DE",
+    "posicao": "prefixo",
+    "tipo": "ester"
+  },
+  {
+    "texto": "CIPIONATO DE",
+    "posicao": "prefixo",
+    "tipo": "ester"
+  },
+  {
+    "texto": "PROPIONATO DE",
+    "posicao": "prefixo",
+    "tipo": "ester"
+  },
+  {
+    "texto": "MONOIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "MONOIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "DIIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "DIIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "TRIIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "TRIIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "PENTAIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "PENTAIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "HEMIIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "HEMIIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "SESQUIIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "SESQUIIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "ANIDRO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "ANIDRA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "HIDRATADO",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "HIDRATADA",
+    "posicao": "sufixo",
+    "tipo": "hidratacao"
+  },
+  {
+    "texto": "SÓDICO",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "SÓDICA",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "POTÁSSICO",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "POTÁSSICA",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "CÁLCICO",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "CÁLCICA",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "DISSÓDICO",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "DISSÓDICA",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "DE SÓDIO",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  },
+  {
+    "texto": "DE POTÁSSIO",
+    "posicao": "sufixo",
+    "tipo": "sal"
+  }
+]

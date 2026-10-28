@@ -34,6 +34,12 @@ def test_fonte_e_contagens():
     assert catalogo["fonte"]["ato"] == dados.ATO
     assert set(catalogo["listas"]) == set(CONTAGENS)
     for sigla, contagem in CONTAGENS.items():
+        regra = catalogo["listas"][sigla]["derivados"]
+        assert regra["sais"] is (sigla != "D2")
+        assert regra["isomeros"] is (sigla not in {"D1", "D2"})
+        assert regra["esteres"] is (sigla not in {"C3", "D1", "D2", "F2", "F3", "F4"})
+        assert regra["eteres"] == regra["esteres"]
+        assert regra["excecoes"] == (["dextrometorfano", "dextrorfano"] if sigla == "A1" else [])
         itens = catalogo["listas"][sigla]["substancias"]
         assert len(itens) == contagem
         assert itens[-1]["numero"] == contagem
@@ -157,3 +163,35 @@ def test_artefatos_check_nao_escreve(tmp_path, monkeypatch):
     (tmp_path / dados.DESTINO).write_bytes(b"{}")
     assert cli.artefatos(check=True) == 1
     assert (tmp_path / dados.DESTINO).read_bytes() == b"{}"
+
+
+@pytest.mark.parametrize(
+    "adendos,sais,esteres,excecoes",
+    [
+        ([], False, False, []),
+        (["1) Padrões analíticos de sais e ésteres."], False, False, []),
+        (
+            ["1) ficam também sob controle todos os sais das substâncias desta Lista."],
+            True,
+            False,
+            [],
+        ),
+        (
+            [
+                "1) ficam também sob controle os sais, ésteres e isômeros "
+                "(exceto os isômeros exemplo, (+)3-metoxi, e o Outro, (+) 3-hidroxi), "
+                "das substâncias enumeradas acima."
+            ],
+            True,
+            True,
+            ["exemplo", "outro"],
+        ),
+    ],
+)
+def test_extrair_derivados(adendos, sais, esteres, excecoes):
+    regra = dados.derivados(adendos)
+    assert regra["sais"] is sais
+    assert regra["esteres"] is esteres
+    assert regra["excecoes"] == excecoes
+    with pytest.raises(ValueError, match="não reconhecido"):
+        dados.derivados(["1) ficam também sob controle formas desconhecidas."])
