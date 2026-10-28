@@ -22,6 +22,23 @@ import sncr
 assert sncr.__version__ == "0.1.0"
 ```
 
+## Tipos e numerações
+
+Exemplo com numeração sintética, sem vínculo com prescritor:
+
+```python
+from sncr import numero, tipos
+
+assert tipos.obter("nra").codigo == "1"
+assert tipos.para_lista("C1") == (tipos.obter("RCE"),)
+assert numero.formatar("29116000000042") == "2911.6-00.0000042"
+assert len(numero.faixa("2911.6-00.0000042", "2911.6-00.0000044")) == 3
+```
+
+A validação é estrutural: não consulta emissão, titularidade ou situação no SNCR.
+Aceita 14 e 16 dígitos e não aplica dígito verificador. UF é mantida como texto,
+sem associação com códigos IBGE. Veja limites e fontes em [DATA_SOURCES.md](DATA_SOURCES.md).
+
 - [Fontes de dados](DATA_SOURCES.md)
 - [Contribuição](CONTRIBUTING.md)
 - [Segurança](SECURITY.md)
