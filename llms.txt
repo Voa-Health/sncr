@@ -1,0 +1,12 @@
+# sncr para Python
+
+Pacote Python sobre receituários de medicamentos controlados da Anvisa (SNCR).
+Requer Python 3.11 ou superior. O pacote base não possui dependências de execução.
+Não há interface de linha de comando nem servidor MCP.
+
+- [Início](README.md)
+- [Fontes de dados](DATA_SOURCES.md)
+- [Contribuição](CONTRIBUTING.md)
+
+Sem vínculo com a Anvisa ou o Ministério da Saúde.
+A classificação não substitui a leitura da norma.
