@@ -39,6 +39,27 @@ A validação é estrutural: não consulta emissão, titularidade ou situação 
 Aceita 14 e 16 dígitos e não aplica dígito verificador. UF é mantida como texto,
 sem associação com códigos IBGE. Veja limites e fontes em [DATA_SOURCES.md](DATA_SOURCES.md).
 
+## Listas de substâncias
+
+```python
+from sncr import listas
+
+resultado = listas.classificar("clonazepam")
+assert resultado.listas == ("B1",)
+assert resultado.receituarios[0].sigla == "NRB"
+assert listas.classificar("Rivotril").encontrada is False
+```
+
+A consulta compara somente nomes e sinônimos exatos, ignorando acentos,
+maiúsculas e espaços repetidos. Não identifica nomes comerciais nem aproximações.
+O resultado inclui a atualização e o ato de origem.
+
+A classificação não substitui a leitura da norma. Os adendos são devolvidos em
+`pendencias` para revisão humana; não são aplicados automaticamente. Listas sem
+receituário SNCR também devolvem a descrição do cabeçalho como pendência.
+Uma consulta não encontrada não significa receita simples ou ausência de controle.
+O catálogo pode ser lido com `listas.listas()` e `listas.lista("B1")`.
+
 - [Fontes de dados](DATA_SOURCES.md)
 - [Contribuição](CONTRIBUTING.md)
 - [Segurança](SECURITY.md)
