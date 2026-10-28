@@ -23,6 +23,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+sncr = "sncr.__main__:main"
+
 [project.optional-dependencies]
 mcp = ["mcp>=1.30,<3"]
 cliente = ["httpx>=0.28,<1"]
