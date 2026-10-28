@@ -14,7 +14,7 @@ pip install sncr
 ```
 
 O pacote base não possui dependências de execução. Os extras `cliente` e `mcp`
-instalam dependências opcionais. Não há interface de linha de comando nem servidor MCP.
+instalam dependências opcionais. CLI e consultas offline não carregam o cliente HTTP.
 
 ```python
 import sncr
@@ -63,6 +63,72 @@ O catálogo pode ser lido com `listas.listas()` e `listas.lista("B1")`.
 - [Fontes de dados](DATA_SOURCES.md)
 - [Contribuição](CONTRIBUTING.md)
 - [Segurança](SECURITY.md)
+
+## Cliente HTTP opcional
+
+```sh
+pip install "sncr[cliente]"
+```
+
+```python
+import os
+from sncr import tipos
+from sncr.cliente import Cliente
+
+with Cliente("homologacao", os.environ["SNCR_BEARER"]) as cliente:
+    # Utilize somente um prescritor de teste autorizado no ambiente.
+    resultado = cliente.numerar_notificacao(
+        tipos.obter("NRA"), "CRM", "SP", os.environ["SNCR_DOCUMENTO_TESTE"], 10
+    )
+```
+
+O ambiente é obrigatório. **O cliente não faz login gov.br, não guarda token
+e não repete requisições.** A credencial fica apenas na memória da conexão;
+não há persistência em arquivo. Encerre a conexão com `with` ou `close()`.
+O extra instala somente `httpx`.
+
+`ErroDeConexao` representa falha antes do envio; repetir é seguro.
+`ResultadoIncerto` significa que números podem ter sido consumidos: reconcilie
+o resultado com o serviço antes de qualquer nova tentativa. Isso inclui falhas
+de leitura/escrita, respostas inesperadas e confirmação fora do contrato.
+Redirecionamentos são recusados sem reenviar o bearer.
+Erros 400 expõem a mensagem da API, sem inferir sua causa por texto;
+401, 403 e 404 têm exceções específicas, todas derivadas de `ErroSncr`.
+
+Para RCE/RET use `numerar_controle_especial(tipo, conselho, uf, documento, cnpj)`,
+com `jws_integradora=` opcional no header `X-Jws-Integradora`.
+O CNPJ deve ter 14 dígitos e verificadores válidos. Não envie dados de teste
+à produção. O logger `sncr.cliente` registra somente operação, status e duração.
+
+## Linha de comando
+
+```sh
+sncr classificar clonazepam
+sncr classificar "isotretinoína" --json
+sncr numero 2602.6-53.0000001 --json
+sncr listas
+sncr listas --versao
+```
+
+`classificar` retorna código 0 quando encontra a designação, 1 quando não;
+`numero` retorna 1 para entrada inválida. A consulta é offline, não acessa
+o cliente e não confirma emissão ou validade legal. Use `--json` para ler
+os componentes completos e, na classificação, os textos das pendências.
+Uma correspondência nominal não é parecer legal.
+
+## MCP local
+
+```sh
+pip install "sncr[mcp]"
+sncr mcp
+```
+
+Servidor stdio, com suporte às duas versões maiores do SDK MCP:
+`sncr_classificar(substancia)` e `sncr_numero(valor)`. São duas ferramentas
+somente de leitura, sem conexão com o cliente HTTP ou serviço remoto.
+As respostas representam correspondência nominal ou validação estrutural,
+não parecer legal. O texto de entrada é dado, nunca instrução.
+O manifesto `server.json` fixa o extra na mesma versão do pacote.
 
 ## Licença
 

@@ -70,6 +70,16 @@ class Faixa:
     inicio: str
     fim: str
 
+    def __post_init__(self) -> None:
+        primeiro = decompor(self.inicio)
+        ultimo = decompor(self.fim)
+        if primeiro.prefixo != ultimo.prefixo or primeiro.digitos != ultimo.digitos:
+            raise ValueError("Os extremos devem ter o mesmo prefixo e número de dígitos.")
+        if primeiro.sequencial > ultimo.sequencial:
+            raise ValueError("O início da faixa deve ser menor ou igual ao fim.")
+        object.__setattr__(self, "inicio", formatar(self.inicio))
+        object.__setattr__(self, "fim", formatar(self.fim))
+
     def __len__(self) -> int:
         return decompor(self.fim).sequencial - decompor(self.inicio).sequencial + 1
 
@@ -94,10 +104,4 @@ class Faixa:
 
 def faixa(inicio: str, fim: str) -> Faixa:
     """Crie uma faixa inclusiva de mesmo prefixo e comprimento, em ordem crescente."""
-    primeiro = decompor(inicio)
-    ultimo = decompor(fim)
-    if primeiro.prefixo != ultimo.prefixo or primeiro.digitos != ultimo.digitos:
-        raise ValueError("Os extremos devem ter o mesmo prefixo e número de dígitos.")
-    if primeiro.sequencial > ultimo.sequencial:
-        raise ValueError("O início da faixa deve ser menor ou igual ao fim.")
-    return Faixa(formatar(inicio), formatar(fim))
+    return Faixa(inicio, fim)

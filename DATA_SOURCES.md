@@ -36,6 +36,30 @@ como código IBGE. Não há dígito verificador documentado nas fontes consultad
 
 ## Reprodução
 
+### Endpoints de integração
+
+O Manual da API v5, seção de URL base, documenta:
+
+- Produção: `https://api-gateway.prd.apps.anvisa.gov.br/api-sncr`.
+- Homologação: `https://api-gateway.hmg.apps.anvisa.gov.br/api-sncr`.
+
+O [webinar de integração de junho/2026](https://www.gov.br/anvisa/pt-br/assuntos/educacaoepesquisa/webinar/medicamentos/arquivos/sncr-webinar-integracao-plataforma-prescricoes-anvisa-junho-2026.pdf/@@display-file/file) também cita
+`https://sncr-api.hmg.apps.anvisa.gov.br` como endereço de homologação.
+SHA-256 do PDF: `0ea8b2b5c3e22c3a6c9a22f3b0aaf133e2ef46f2495dfb9aa36111fd70456002`.
+Os dois endereços de homologação servem a especificação em `/v3/api-docs`.
+O contrato consultado declara API **1.2.1** (`info.version`), no formato
+OpenAPI **3.0.1**.
+O cliente usa os gateways do Manual, sem fallback automático; os paths
+de numeração são `/api/v1/numeracoes/notificacao-receita` e
+`/api/v1/numeracoes/receita-especial-retencao`.
+
+O contrato OpenAPI consultado descreve tanto erros 400 com `codigo/mensagem`
+quanto `errorObject` e exemplos em lista. O cliente extrai mensagens
+defensivamente, sem deduzir causas por seu texto.
+O exemplo de faixa de controle especial da especificação apresenta quantidade
+incompatível com os extremos inclusivos: o cliente exige consistência entre
+`quantidade` e `len(faixa)`, em vez de aceitar essa divergência.
+
 ### Anexo I versionado
 
 - Ato: **RDC nº 1.036, de 09/07/2026**.
