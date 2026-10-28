@@ -6,6 +6,20 @@ import pytest
 from sncr import numero, tipos
 
 
+@pytest.mark.parametrize(
+    "inicio,fim",
+    [
+        ("x", "y"),
+        ("2911.6-00.0000044", "2911.6-00.0000042"),
+        ("2911.6-00.0000042", "2911.7-00.0000044"),
+        ("2911.6-00.0000042", "2911.6-00.000000044"),
+    ],
+)
+def test_construcao_direta_faixa(inicio, fim):
+    with pytest.raises(ValueError):
+        numero.Faixa(inicio, fim)
+
+
 @pytest.mark.parametrize("tamanho", [14, 16])
 @pytest.mark.parametrize("codigo", "1234567")
 def test_numero(tamanho, codigo):
