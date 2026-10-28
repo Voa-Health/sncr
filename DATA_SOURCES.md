@@ -107,6 +107,9 @@ Use `--arquivo caminho.xlsx` (ou CSV com esses cabeçalhos, separado por `;`)
 para reprodução offline e `--url URL` para registrar outra origem.
 O relatório informa URL e SHA-256; o arquivo não é persistido pelo comando.
 Com arquivo local, a URL é uma declaração de origem, não uma verificação de autenticidade.
+A planilha serve somente como fonte de medição e não é empacotada.
+Referência de 09/10/2026, consultada em 28/10/2026:
+SHA-256 `3c94fa640c4fcdb6fb3cbb6a02e4a86da0707c90ade42608132d5033e9485b99`.
 
 A unidade é uma linha de apresentação, sem deduplicação por EAN ou GGREM.
 Uma apresentação casa se **algum** princípio casar; princípios de compostos são
