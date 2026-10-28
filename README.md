@@ -19,7 +19,7 @@ instalam dependências opcionais. CLI e consultas offline não carregam o client
 ```python
 import sncr
 
-assert sncr.__version__ == "0.1.0"
+assert sncr.__version__ == "0.2.0"
 ```
 
 ## Tipos e numerações

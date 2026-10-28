@@ -74,7 +74,7 @@ jobs:
       - run: uv run python -c "import zipfile,glob; z=zipfile.ZipFile(glob.glob('dist/*.whl')[0]); assert any(n.endswith('py.typed') for n in z.namelist())"
       - run: python -m venv /tmp/sncr-base
       - run: wheel=$(printf '%s\n' dist/*.whl) && /tmp/sncr-base/bin/pip install "$wheel"
-      - run: /tmp/sncr-base/bin/python -c "import sncr; assert sncr.__version__ == '0.1.0'"
+      - run: /tmp/sncr-base/bin/python -c "import sncr; assert sncr.__version__ == '0.2.0'"
 
   mcp:
     runs-on: ubuntu-latest

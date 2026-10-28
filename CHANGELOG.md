@@ -1,6 +1,6 @@
 # Changelog
 
-## Não lançado
+## 0.2.0
 
 - Codings FHIR com códigos `str` e textos curtos que sinalizam adendos e ausência de receituário.
 - Classificação de sais e derivados conforme as extensões gerais dos adendos.

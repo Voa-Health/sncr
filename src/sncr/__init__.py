@@ -4,4 +4,4 @@ from sncr import fhir, listas, numero, tipos
 
 __all__ = ["fhir", "listas", "numero", "tipos"]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
