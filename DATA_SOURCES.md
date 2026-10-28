@@ -95,3 +95,22 @@ O comando `fontes` baixa a página e atualiza o bruto e seus metadados.
 `artefatos --check` não escreve arquivos e falha se qualquer resultado divergir.
 O JSON é incluído no wheel; a consulta não usa rede.
 A classificação não substitui a leitura da norma; adendos exigem revisão humana.
+
+### Cobertura CMED
+
+`uv run python scripts/manutencao.py cobertura` lê a planilha oficial PF/PMC
+com SUBSTÂNCIA, APRESENTAÇÃO e TARJA, sem instalar dependências adicionais.
+A URL padrão é
+`https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos/arquivos/lista_pmc__20261009_115232672.xlsx/@@download/file`,
+publicada na [página de preços](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos).
+Use `--arquivo caminho.xlsx` (ou CSV com esses cabeçalhos, separado por `;`)
+para reprodução offline e `--url URL` para registrar outra origem.
+O relatório informa URL e SHA-256; o arquivo não é persistido pelo comando.
+Com arquivo local, a URL é uma declaração de origem, não uma verificação de autenticidade.
+
+A unidade é uma linha de apresentação, sem deduplicação por EAN ou GGREM.
+Uma apresentação casa se **algum** princípio casar; princípios de compostos são
+separados por `;` na célula SUBSTÂNCIA. A coluna EXATO exclui correspondências
+por derivado; COM DERIVADO inclui ambas. As tarjas são preservadas literalmente,
+inclusive valores ausentes e marcadores da fonte. Cobertura não valida a tarja
+nem determina o receituário de uma apresentação ou suas exceções de uso.
