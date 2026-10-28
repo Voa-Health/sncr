@@ -1,3 +1,4 @@
+import json
 from dataclasses import FrozenInstanceError, replace
 
 import pytest
@@ -164,6 +165,7 @@ def test_categorias_fhir(principios, siglas):
     categorias = fhir.categorias(iter(principios))
     assert [categoria["coding"][0]["code"] for categoria in categorias] == siglas
     for categoria, sigla in zip(categorias, siglas, strict=True):
+        assert all(type(coding["code"]) is str for coding in categoria["coding"])
         if sigla == "sem-lista":
             assert categoria == {
                 "coding": [
@@ -178,7 +180,11 @@ def test_categorias_fhir(principios, siglas):
             }
             continue
         lista = listas.lista(sigla)
-        classificacao = listas.classificar(lista.substancias[0].nome)
+        texto = f"Portaria SVS/MS 344/98, Atualização nº 101: Lista {sigla}"
+        if lista.adendos:
+            texto += " (sujeita aos adendos da lista)"
+        if not tipos.para_lista(sigla):
+            texto += " — sem receituário de controle associado"
         assert categoria == {
             "coding": [
                 {
@@ -191,12 +197,55 @@ def test_categorias_fhir(principios, siglas):
                     {
                         "system": "https://github.com/Voa-Health/sncr/receituario",
                         "version": "101",
-                        "code": tipo.sigla,
+                        "code": tipo.sigla.value,
                         "display": tipo.nome,
                     }
                     for tipo in tipos.para_lista(sigla)
                 ],
             ],
-            "text": f"Portaria SVS/MS 344/98, Atualização nº 101: Lista {sigla}; "
-            + "; ".join(classificacao.pendencias),
+            "text": texto,
         }
+
+
+def test_categorias_fhir_json_estavel():
+    esperado = [
+        {
+            "coding": [
+                {
+                    "system": "https://github.com/Voa-Health/sncr/lista",
+                    "version": "101",
+                    "code": "B1",
+                    "display": listas.lista("B1").titulo,
+                },
+                {
+                    "system": "https://github.com/Voa-Health/sncr/receituario",
+                    "version": "101",
+                    "code": "NRB",
+                    "display": 'Notificação de Receita "B"',
+                },
+            ],
+            "text": "Portaria SVS/MS 344/98, Atualização nº 101: Lista B1"
+            " (sujeita aos adendos da lista)",
+        }
+    ]
+    serializado = json.dumps(esperado)
+    assert json.dumps(fhir.categorias(["clonazepam", "zolpidem"])) == serializado
+    assert json.dumps(fhir.categorias(["zolpidem", "clonazepam"])) == serializado
+
+
+@pytest.mark.parametrize("lista", listas.listas(), ids=lambda lista: lista.sigla)
+def test_categorias_fhir_textos_curtos(lista):
+    principio = lista.substancias[0].nome
+    antes = listas.classificar(principio).pendencias
+    categorias = fhir.categorias([principio])
+    assert all(len(categoria["text"]) < 200 for categoria in categorias)
+    assert all(
+        type(coding["code"]) is str for categoria in categorias for coding in categoria["coding"]
+    )
+    if lista.sigla == "D2":
+        categoria = next(c for c in categorias if c["coding"][0]["code"] == "D2")
+        assert categoria["text"] == (
+            "Portaria SVS/MS 344/98, Atualização nº 101: Lista D2"
+            " (sujeita aos adendos da lista) — sem receituário de controle associado"
+        )
+    assert listas.classificar(principio).pendencias == antes

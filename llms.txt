@@ -23,5 +23,7 @@ Sem vínculo com a Anvisa ou o Ministério da Saúde.
 A classificação não substitui a leitura da norma.
 sncr.fhir.categorias(principios) gera MedicationRequest.category FHIR R5,
 com codings de lista e receituário versionados pela atualização da norma.
+Códigos FHIR são str; text curto sinaliza adendos e ausência de receituário.
+Adendos integrais permanecem em Classificacao.pendencias.
 Medição CMED: scripts/manutencao.py cobertura [--arquivo caminho.xlsx].
 Planilha oficial PF/PMC não empacotada; relatório registra URL e SHA-256.

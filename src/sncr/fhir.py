@@ -54,16 +54,15 @@ def categorias(principios: Iterable[str]) -> list[dict[str, Any]]:
             {
                 "system": SISTEMA_RECEITUARIO,
                 "version": versao,
-                "code": tipo.sigla,
+                "code": tipo.sigla.value,
                 "display": tipo.nome,
             }
             for tipo in associados
         )
-        pendencias = lista.adendos
-        if not associados:
-            pendencias += (lista.descricao or lista.titulo,)
         texto = f"Portaria SVS/MS 344/98, Atualização nº {versao}: Lista {lista.sigla}"
-        if pendencias:
-            texto += "; " + "; ".join(pendencias)
+        if lista.adendos:
+            texto += " (sujeita aos adendos da lista)"
+        if not associados:
+            texto += " — sem receituário de controle associado"
         categorias.append({"coding": codings, "text": texto})
     return categorias

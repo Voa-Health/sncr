@@ -81,7 +81,10 @@ O catálogo pode ser lido com `listas.listas()` e `listas.lista("B1")`.
 
 `sncr.fhir.categorias(principios)` gera elementos de `MedicationRequest.category`,
 um por lista, deduplicados e na ordem da Portaria. Cada elemento inclui os codings
-de lista e receituário, com a atualização da norma em `version`, e as pendências em `text`.
+de lista e receituário, com códigos `str` e a atualização da norma em `version`.
+O `text` é curto: identifica a lista, sinaliza a existência de adendos e, quando
+aplicável, a ausência de receituário de controle associado. O texto integral dos
+adendos continua disponível em `Classificacao.pendencias`, sem alterações.
 Princípios vazios são ignorados; entrada vazia gera `[]`.
 
 Exemplo sintético de princípio não encontrado, com saída JSON completa e curta:
