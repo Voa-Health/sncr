@@ -1,28 +1,299 @@
-Pacote Python sobre receituários de medicamentos controlados da Anvisa (SNCR — Sistema Nacional de Controle de Receituários).
+<div align="center">
+  <h1>sncr</h1>
+  <h3>Receituários de medicamentos controlados, para pessoas e agentes de IA.</h3>
+</div>
 
-# sncr
+<div align="center">
+  <a href="https://github.com/Voa-Health/sncr/actions/workflows/ci.yml"><img src="https://github.com/Voa-Health/sncr/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://pypi.org/project/sncr/"><img src="https://img.shields.io/pypi/v/sncr?label=PyPI" alt="Versão no PyPI"></a>
+  <a href="https://pypi.org/project/sncr/"><img src="https://img.shields.io/pypi/pyversions/sncr" alt="Versões do Python"></a>
+  <a href="https://github.com/Voa-Health/sncr/blob/main/LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-Apache--2.0-blue" alt="Licença Apache-2.0"></a>
+</div>
 
-O projeto não tem vínculo com a Anvisa nem com o Ministério da Saúde.
-A classificação não substitui a leitura da norma.
+<div align="center">
+  <a href="#início-rápido">Início rápido</a> ·
+  <a href="#cli">CLI</a> ·
+  <a href="#conectar-agentes">MCP local</a> ·
+  <a href="#referência">Referência</a> ·
+  <a href="https://github.com/Voa-Health/sncr/blob/main/DATA_SOURCES.md">Fontes de dados</a>
+</div>
 
-## Instalação
+<br>
 
-Requer Python 3.11 ou superior.
+Consulte substâncias nas listas da Portaria SVS/MS nº 344/1998, encontre os tipos
+de receituário associados e confira a estrutura de numerações do Sistema Nacional
+de Controle de Receituários (SNCR). Uma biblioteca Python em código aberto, com
+CLI e MCP locais, além de um cliente opcional para a API de numeração da Anvisa.
+
+> [!IMPORTANT]
+> O projeto não tem vínculo com a Anvisa nem com o Ministério da Saúde.
+> A classificação não substitui a leitura da norma. Validar a estrutura de um
+> número não confirma emissão, titularidade ou situação no SNCR.
+
+> [!TIP]
+> Usa Claude Code, Codex ou Cursor? Conecte o MCP local e peça, por exemplo,
+> "consulte clonazepam e mostre as pendências para revisão". Veja
+> [Conectar agentes](#conectar-agentes).
+
+## Início rápido
+
+Requer Python 3.11+. O pacote base não possui dependências de execução.
 
 ```sh
 pip install sncr
 ```
 
-O pacote base não possui dependências de execução. Os extras `cliente` e `mcp`
-instalam dependências opcionais. CLI e consultas offline não carregam o cliente HTTP.
-
 ```python
-import sncr
+from sncr import listas
 
-assert sncr.__version__ == "0.2.0"
+resultado = listas.classificar("clonazepam")
+assert resultado.listas == ("B1",)
+assert resultado.receituarios[0].sigla == "NRB"
+assert resultado.pendencias
 ```
 
-## Tipos e numerações
+O resultado traz as listas encontradas, os receituários associados, a fonte e os
+adendos em `pendencias`, para revisão humana. Uma consulta não encontrada
+**não significa receita simples ou ausência de controle**.
+
+## CLI
+
+Instale com `pip install sncr` ou execute sem instalar com
+`uvx sncr classificar clonazepam`.
+
+| Comando | Uso |
+| --- | --- |
+| `sncr classificar clonazepam` | Consulta uma substância e informa quantas pendências exigem revisão. |
+| `sncr classificar "isotretinoína" --json` | Retorna a classificação com os textos completos das pendências. |
+| `sncr numero 2911.6-00.0000042 --json` | Decompõe uma numeração sintética, sem confirmar emissão. |
+| `sncr listas` | Lista siglas e títulos do catálogo. |
+| `sncr listas --versao` | Mostra os metadados da fonte normativa em JSON. |
+| `sncr --version` | Mostra a versão instalada do pacote. |
+| `sncr mcp` | Inicia o MCP local em stdio; requer `sncr[mcp]`. |
+
+`classificar` retorna `0` quando encontra a designação e `1` quando não encontra;
+`numero` retorna `1` para entrada inválida. Erros de uso retornam `2`.
+As consultas rodam offline e não carregam o cliente HTTP. Use `--json` em
+`classificar` e `numero` para obter os campos completos.
+
+## Para quem é
+
+| Você é | O sncr ajuda a |
+| --- | --- |
+| **Desenvolvedor de sistemas de prescrição** | consultar listas, associar receituários e gerar categorias FHIR R5 |
+| **Profissional de saúde ou farmacêutico** | localizar designações na norma e os adendos que precisam de leitura |
+| **Integrador da API SNCR** | solicitar numerações com ambiente explícito e tratar respostas incertas |
+| **Desenvolvedor de agentes de IA** | oferecer consultas locais, somente de leitura, por MCP |
+
+## Como funciona
+
+1. **Consulte** o princípio ativo com `listas.classificar`.
+2. **Confira** as listas e os receituários associados no resultado.
+3. **Revise** os adendos em `pendencias`, inclusive exceções por concentração ou
+   forma farmacêutica. O pacote não decide essas exceções.
+4. **Trate a numeração separadamente:** `numero` confere a estrutura local;
+   obter números no serviço da Anvisa exige o cliente opcional e autenticação.
+
+A busca compara nomes e sinônimos exatos, ignorando acentos, maiúsculas e espaços
+repetidos. Sem correspondência, tenta formas derivadas autorizadas pelos adendos.
+Não busca nomes comerciais, aproximações ou equivalência química por estrutura.
+
+## O que vem no pacote
+
+- **[Biblioteca Python](#referência):** listas de substâncias, tipos de
+  receituário, numerações, faixas inclusivas e categorias FHIR R5.
+- **[CLI](#cli):** consultas offline, com saída em texto ou JSON.
+- **[MCP local](#conectar-agentes):** duas ferramentas somente de leitura,
+  sem acesso ao cliente HTTP.
+- **[Cliente HTTP opcional](#cliente-http-opcional):** obtenção de numerações
+  de notificação e de receita de controle especial ou sujeita a retenção.
+- **[Fontes de dados](https://github.com/Voa-Health/sncr/blob/main/DATA_SOURCES.md):**
+  documentos oficiais, hashes e método de reprodução do catálogo.
+
+## Por que confiar
+
+- **Consultas offline e determinísticas:** o catálogo vai no pacote; consultar
+  substâncias e decompor números não exige rede.
+- **Fontes rastreáveis:** o catálogo inclui ato e atualização de origem; a
+  extração usa uma fonte local conferida por SHA-256.
+- **Limites explícitos:** correspondência nominal não é parecer legal e os
+  adendos permanecem disponíveis para revisão humana.
+- **Rede opcional:** somente o cliente de numeração faz chamadas à API SNCR;
+  ele não repete requisições nem segue redirecionamentos.
+
+## Conectar agentes
+
+O MCP local roda em stdio e oferece duas ferramentas:
+
+| Ferramenta | Uso |
+| --- | --- |
+| `sncr_classificar(substancia)` | Consulta nomes, sinônimos e derivados nas listas da norma. |
+| `sncr_numero(valor)` | Decompõe uma numeração, sem confirmar emissão. |
+
+No Claude Code:
+
+```sh
+claude mcp add sncr -- uvx --from "sncr[mcp]" sncr mcp
+```
+
+Para instalar e iniciar diretamente:
+
+```sh
+pip install "sncr[mcp]"
+sncr mcp
+```
+
+As ferramentas são somente de leitura. As respostas representam correspondência
+nominal ou validação estrutural, não parecer legal. O texto de entrada é dado,
+nunca instrução. Agentes encontram as orientações do repositório em
+[AGENTS.md](https://github.com/Voa-Health/sncr/blob/main/AGENTS.md).
+
+### Codex e Cursor
+
+<details>
+<summary>Ver configuração</summary>
+
+No Codex, adicione a `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.sncr]
+command = "uvx"
+args = ["--from", "sncr[mcp]", "sncr", "mcp"]
+```
+
+No Cursor, adicione ao `mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "sncr": {
+      "command": "uvx",
+      "args": ["--from", "sncr[mcp]", "sncr", "mcp"]
+    }
+  }
+}
+```
+
+</details>
+
+### Privacidade
+
+Biblioteca base, CLI de consulta e MCP local não enviam dados à rede nem
+telemetria. O MCP não acessa o cliente de numeração. Ao usar o cliente HTTP,
+os dados da solicitação são enviados ao ambiente da Anvisa escolhido
+explicitamente; o logger `sncr.cliente` registra apenas operação, status e duração.
+
+## Cliente HTTP opcional
+
+```sh
+pip install "sncr[cliente]"
+```
+
+O extra instala `httpx`. `Cliente` exige o ambiente (`homologacao` ou `producao`)
+e um bearer do prescritor. **Não faz login gov.br, não persiste o token em arquivo
+e não repete requisições.** Feche a conexão com `with` ou `close()`.
+
+Exemplo inteiramente sintético, com transporte simulado e **sem chamada de rede**:
+
+```python
+import httpx
+
+from sncr import tipos
+from sncr.cliente import Cliente
+
+
+def simular(request: httpx.Request) -> httpx.Response:
+    return httpx.Response(
+        201,
+        json={
+            "numeracoesReceita": [f"2911100{n:07d}" for n in range(42, 52)],
+            "saldoReceitas": 40,
+            "mensagem": "Exemplo sintético",
+        },
+    )
+
+
+with Cliente("homologacao", "token-sintetico", transport=httpx.MockTransport(simular)) as cliente:
+    resultado = cliente.numerar_notificacao(tipos.obter("NRA"), "CRM", "SP", "TESTE", 10)
+    assert len(resultado.numeros) == 10
+```
+
+Para uma integração com o serviço, consulte os requisitos e endpoints nas
+[fontes de dados](https://github.com/Voa-Health/sncr/blob/main/DATA_SOURCES.md#endpoints-de-integração).
+Use somente prescritor de teste autorizado em homologação. Não envie dados
+sintéticos à produção.
+
+Para RCE/RET, use
+`numerar_controle_especial(tipo, conselho, uf, documento, cnpj)`, com
+`jws_integradora=` opcional no header `X-Jws-Integradora`. O CNPJ precisa ter
+14 dígitos e verificadores válidos. O retorno confere tipo, faixa e quantidade.
+
+### Falhas e repetição
+
+- `ErroDeConexao`: falha antes do envio; repetir é seguro.
+- `ResultadoIncerto`: números podem ter sido consumidos. Reconcilie o resultado
+  com o serviço antes de qualquer nova tentativa.
+- `RedirecionamentoRecusado`: o bearer não é reenviado a outro endereço.
+- `RequisicaoRecusada`: erro 400 com mensagem da API, sem inferir a causa pelo texto.
+- `NaoAutenticado`, `SemPermissao` e `NaoEncontrado`: respostas 401, 403 e 404.
+
+Todas derivam de `ErroSncr`. Falhas de leitura ou escrita, respostas inesperadas
+e confirmações fora do contrato podem resultar em `ResultadoIncerto`.
+
+## Referência
+
+### Símbolos da biblioteca
+
+| Símbolo | Uso |
+| --- | --- |
+| `listas.classificar(substancia)` | Retorna listas, receituários, fonte e pendências. |
+| `listas.listas()` / `listas.lista(sigla)` | Consulta o catálogo de listas na ordem da norma ou uma lista pela sigla. |
+| `tipos.obter(sigla)` / `tipos.por_codigo(digito)` | Consulta um tipo de receituário. |
+| `tipos.para_lista(sigla)` | Retorna os tipos associados a uma lista. |
+| `numero.normalizar(valor)` / `numero.valido(valor)` | Normaliza dígitos ou verifica a estrutura. |
+| `numero.decompor(valor)` / `numero.formatar(valor)` | Decompõe ou pontua uma numeração. |
+| `numero.faixa(inicio, fim)` | Cria um intervalo inclusivo, iterável sem materializar todos os números. |
+| `fhir.categorias(principios)` | Gera elementos de `MedicationRequest.category` do FHIR R5. |
+
+### Classificação e derivados
+
+<details>
+<summary>Ver regras e limites</summary>
+
+Sem correspondência exata, a consulta remove iterativamente prefixos e sufixos
+da [tabela de formas](https://github.com/Voa-Health/sncr/blob/main/src/sncr/data/derivados.json)
+até encontrar uma forma-base. Só aceita o derivado quando o adendo de
+**"ficam também sob controle"** estende o controle a todos os tipos removidos:
+sal, éster ou éter. Hidratação é neutra e não exige extensão adicional.
+
+Exceções nomeadas bloqueiam derivados, como dextrometorfano e dextrorfano em A1.
+A lista D2 não tem extensão a sais. Somente as regras gerais de derivados são
+aplicadas; exceções por apresentação, concentração ou forma farmacêutica
+permanecem em `pendencias`. Listas sem receituário SNCR também devolvem a
+descrição do cabeçalho como pendência.
+
+```python
+from sncr import listas
+
+resultado = listas.classificar("HEMITARTARATO DE ZOLPIDEM")
+assert resultado.listas == ("B1",)
+assert resultado.por_derivado is True
+assert resultado.forma_base == "Zolpidem"
+assert listas.classificar("Rivotril").encontrada is False
+```
+
+`forma_base` preserva o nome da norma e é `None` em consultas exatas ou não
+encontradas. A fonte em `resultado.fonte` informa a atualização e o ato de origem.
+O catálogo é uma cópia versionada: a consulta não verifica mudanças na norma
+pela rede. Consulte também o
+[relatório de extração](https://github.com/Voa-Health/sncr/blob/main/docs/extracao.md).
+
+</details>
+
+### Tipos e numerações
+
+<details>
+<summary>Ver exemplo e limites estruturais</summary>
 
 Exemplo com numeração sintética, sem vínculo com prescritor:
 
@@ -35,183 +306,51 @@ assert numero.formatar("29116000000042") == "2911.6-00.0000042"
 assert len(numero.faixa("2911.6-00.0000042", "2911.6-00.0000044")) == 3
 ```
 
-A validação é estrutural: não consulta emissão, titularidade ou situação no SNCR.
-Aceita 14 e 16 dígitos e não aplica dígito verificador. UF é mantida como texto,
-sem associação com códigos IBGE. Veja limites e fontes em [DATA_SOURCES.md](DATA_SOURCES.md).
+A validação aceita 14 ou 16 dígitos e confere mês e tipo, sem aplicar dígito
+verificador. UF é mantida como texto de dois dígitos, sem associação com códigos
+IBGE. O ano é o inteiro de dois dígitos, sem inferência de século. A faixa exige
+extremos com o mesmo prefixo e comprimento, em ordem crescente.
 
-## Listas de substâncias
+Essas verificações não consultam emissão, titularidade ou situação no SNCR e
+não comprovam validade legal. Veja as fontes e os formatos em
+[DATA_SOURCES.md](https://github.com/Voa-Health/sncr/blob/main/DATA_SOURCES.md).
 
-```python
-from sncr import listas
-
-resultado = listas.classificar("clonazepam")
-assert resultado.listas == ("B1",)
-assert resultado.receituarios[0].sigla == "NRB"
-assert listas.classificar("Rivotril").encontrada is False
-```
-
-A consulta tenta primeiro nomes e sinônimos exatos, ignorando acentos, maiúsculas
-e espaços repetidos. Não identifica nomes comerciais nem aproximações.
-Sem correspondência exata, remove iterativamente prefixos e sufixos da
-[tabela de formas](src/sncr/data/derivados.json) até encontrar uma forma-base.
-Só aceita o derivado quando o adendo de **"ficam também sob controle"** da lista
-estende o controle a todos os tipos removidos: sal, éster ou éter.
-Hidratação é neutra e não exige extensão adicional. Exceções nomeadas bloqueiam
-derivados, como dextrometorfano e dextrorfano em A1. D2 não tem extensão a sais.
-
-O resultado inclui atualização e ato de origem, `por_derivado` e `forma_base`.
-Esta última preserva o nome da norma e é `None` em consultas exatas ou não encontradas.
-
-```python
-resultado = listas.classificar("HEMITARTARATO DE ZOLPIDEM")
-assert resultado.listas == ("B1",)
-assert resultado.por_derivado is True
-assert resultado.forma_base == "Zolpidem"
-```
-
-A classificação não substitui a leitura da norma. Os adendos são devolvidos em
-`pendencias` para revisão humana; somente as regras gerais de derivados são aplicadas.
-Correspondência nominal não decide exceções por forma farmacêutica ou concentração:
-elas ficam em `pendencias`. Listas sem receituário SNCR também devolvem a descrição
-do cabeçalho como pendência.
-Uma consulta não encontrada não significa receita simples ou ausência de controle.
-O catálogo pode ser lido com `listas.listas()` e `listas.lista("B1")`.
+</details>
 
 ### Categorias FHIR R5
 
-`sncr.fhir.categorias(principios)` gera elementos de `MedicationRequest.category`,
-um por lista, deduplicados e na ordem da Portaria. Cada elemento inclui os codings
-de lista e receituário, com códigos `str` e a atualização da norma em `version`.
-O `text` é curto: identifica a lista, sinaliza a existência de adendos e, quando
-aplicável, a ausência de receituário de controle associado. O texto integral dos
-adendos continua disponível em `Classificacao.pendencias`, sem alterações.
-Princípios vazios são ignorados; entrada vazia gera `[]`.
-
-Exemplo sintético de princípio não encontrado, com saída JSON completa e curta:
+<details>
+<summary>Ver uso e interpretação</summary>
 
 ```python
-import json
 from sncr import fhir
 
-print(json.dumps(fhir.categorias(["SubstanciaInventada"]), ensure_ascii=False, indent=2))
+categorias = fhir.categorias(["clonazepam"])
+assert categorias[0]["coding"][0]["code"] == "B1"
+assert categorias[0]["coding"][1]["code"] == "NRB"
 ```
 
-```json
-[
-  {
-    "coding": [
-      {
-        "system": "https://github.com/Voa-Health/sncr/lista",
-        "version": "101",
-        "code": "sem-lista",
-        "display": "Fora das listas da Portaria 344"
-      }
-    ],
-    "text": "Fora das listas da Portaria 344"
-  }
-]
-```
+`fhir.categorias` gera um elemento de `MedicationRequest.category` por lista,
+deduplicado e na ordem da Portaria. Os codings incluem lista e receituário,
+com códigos textuais e a atualização da norma em `version`.
 
-`sem-lista` significa ausência de correspondência no catálogo, não parecer de
-ausência de controle. Para princípios encontrados, os sistemas são
-`https://github.com/Voa-Health/sncr/lista` e
-`https://github.com/Voa-Health/sncr/receituario`.
+O `text` é curto: identifica a lista, sinaliza adendos e, quando aplicável,
+a ausência de receituário de controle associado. Os adendos integrais continuam
+em `Classificacao.pendencias`. Princípios vazios são ignorados; entrada vazia
+gera `[]`.
 
-### Cobertura CMED
+Sem correspondência em nenhum princípio informado, o resultado usa o código
+`sem-lista`. Ele indica ausência de correspondência no catálogo, **não ausência
+de controle nem autorização de prescrição**.
 
-Medição em **28/10/2026** sobre a planilha oficial PF/PMC de **09/10/2026**,
-[arquivo de referência](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos/arquivos/lista_pmc__20261009_115232672.xlsx/@@download/file).
-Uma apresentação casa quando **algum** princípio casa; compostos são separados
-por `;`. A coluna com derivados inclui as correspondências exatas.
+</details>
 
-| Tarja publicada | Apresentações | Exato | Com derivados | Cobertura |
-| --- | ---: | ---: | ---: | ---: |
-| `- (*)` | 4.610 | 248 | 459 | 9,96% |
-| Tarja Preta | 740 | 243 | 740 | 100,00% |
-| Tarja Sem Tarja | 1.836 | 0 | 39 | 2,12% |
-| Tarja Vermelha | 13.928 | 290 | 450 | 3,23% |
-| Tarja Vermelha sob restrição | 5.521 | 1.842 | 3.888 | 70,42% |
+## Mais
 
-Tarja preta: **740/740** com derivados, das quais **243** já casavam exato.
-Isso mede correspondência nominal, não valida a tarja ou o receituário da apresentação.
-As 39 apresentações sem tarja correspondentes também exigem revisão das pendências.
-A planilha não é empacotada; o relatório registra URL e SHA-256.
-
-```sh
-uv run python scripts/manutencao.py cobertura
-uv run python scripts/manutencao.py cobertura --arquivo caminho/planilha.xlsx
-```
-
-- [Fontes de dados](DATA_SOURCES.md)
-- [Contribuição](CONTRIBUTING.md)
-- [Segurança](SECURITY.md)
-
-## Cliente HTTP opcional
-
-```sh
-pip install "sncr[cliente]"
-```
-
-```python
-import os
-from sncr import tipos
-from sncr.cliente import Cliente
-
-with Cliente("homologacao", os.environ["SNCR_BEARER"]) as cliente:
-    # Utilize somente um prescritor de teste autorizado no ambiente.
-    resultado = cliente.numerar_notificacao(
-        tipos.obter("NRA"), "CRM", "SP", os.environ["SNCR_DOCUMENTO_TESTE"], 10
-    )
-```
-
-O ambiente é obrigatório. **O cliente não faz login gov.br, não guarda token
-e não repete requisições.** A credencial fica apenas na memória da conexão;
-não há persistência em arquivo. Encerre a conexão com `with` ou `close()`.
-O extra instala somente `httpx`.
-
-`ErroDeConexao` representa falha antes do envio; repetir é seguro.
-`ResultadoIncerto` significa que números podem ter sido consumidos: reconcilie
-o resultado com o serviço antes de qualquer nova tentativa. Isso inclui falhas
-de leitura/escrita, respostas inesperadas e confirmação fora do contrato.
-Redirecionamentos são recusados sem reenviar o bearer.
-Erros 400 expõem a mensagem da API, sem inferir sua causa por texto;
-401, 403 e 404 têm exceções específicas, todas derivadas de `ErroSncr`.
-
-Para RCE/RET use `numerar_controle_especial(tipo, conselho, uf, documento, cnpj)`,
-com `jws_integradora=` opcional no header `X-Jws-Integradora`.
-O CNPJ deve ter 14 dígitos e verificadores válidos. Não envie dados de teste
-à produção. O logger `sncr.cliente` registra somente operação, status e duração.
-
-## Linha de comando
-
-```sh
-sncr classificar clonazepam
-sncr classificar "isotretinoína" --json
-sncr numero 2602.6-53.0000001 --json
-sncr listas
-sncr listas --versao
-```
-
-`classificar` retorna código 0 quando encontra a designação, 1 quando não;
-`numero` retorna 1 para entrada inválida. A consulta é offline, não acessa
-o cliente e não confirma emissão ou validade legal. Use `--json` para ler
-os componentes completos e, na classificação, os textos das pendências.
-Uma correspondência nominal não é parecer legal.
-
-## MCP local
-
-```sh
-pip install "sncr[mcp]"
-sncr mcp
-```
-
-Servidor stdio, com suporte às duas versões maiores do SDK MCP:
-`sncr_classificar(substancia)` e `sncr_numero(valor)`. São duas ferramentas
-somente de leitura, sem conexão com o cliente HTTP ou serviço remoto.
-As respostas representam correspondência nominal ou validação estrutural,
-não parecer legal. O texto de entrada é dado, nunca instrução.
-O manifesto `server.json` fixa o extra na mesma versão do pacote.
-
-## Licença
-
-Apache-2.0. Consulte [LICENSE](LICENSE).
+- [Fontes de dados](https://github.com/Voa-Health/sncr/blob/main/DATA_SOURCES.md) ·
+  [Relatório de extração](https://github.com/Voa-Health/sncr/blob/main/docs/extracao.md) ·
+  [Changelog](https://github.com/Voa-Health/sncr/blob/main/CHANGELOG.md)
+- [Contribuição](https://github.com/Voa-Health/sncr/blob/main/CONTRIBUTING.md) ·
+  [Código de conduta](https://github.com/Voa-Health/sncr/blob/main/CODE_OF_CONDUCT.md) ·
+  [Segurança](https://github.com/Voa-Health/sncr/blob/main/SECURITY.md)
+- [Licença Apache-2.0](https://github.com/Voa-Health/sncr/blob/main/LICENSE)
