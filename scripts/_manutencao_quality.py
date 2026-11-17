@@ -86,6 +86,13 @@ def _verificar_texto(root: Path) -> bool:
                     verificavel,
                     flags=re.IGNORECASE,
                 )
+            if relativo in {"README.md", "llms.txt"}:
+                for url in (
+                    "https://api.voa.health/mcp/sncr/",
+                    "https://api.voa.health/api/v2/product/sncr/pricing/",
+                    "https://tiss-api.voa.health/org",
+                ):
+                    verificavel = verificavel.replace(url, "")
             if caminho.suffix == ".py":
                 verificavel = re.sub(r"(?:class Cliente|-> Cliente):", "", verificavel)
             if relativo == "src/sncr/cliente.py":

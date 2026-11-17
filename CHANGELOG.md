@@ -2,6 +2,7 @@
 
 ## Não lançado
 
+- Documentação de acesso ao MCP hospedado, cotas compartilhadas e consulta de preços públicos.
 - Pacote ChatGPT separado, somente para consulta pública de substâncias via OAuth.
 
 ## 0.2.0
