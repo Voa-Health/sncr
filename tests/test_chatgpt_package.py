@@ -7,7 +7,7 @@ from urllib.parse import urlsplit
 
 import pytest
 
-from sncr import __version__
+from sncr import __version__, listas
 from sncr._mcp_metadata import FERRAMENTAS
 
 PACKAGE = Path(__file__).resolve().parents[1] / "plugins" / "chatgpt"
@@ -92,6 +92,27 @@ def test_review_cases(group, count):
     )
     for case in CASES[group]:
         assert all(case[field].strip() for field in ("description", "prompt", "expected_behavior"))
+
+
+def test_examples_are_synthetic():
+    prompts = OPENAI["interface"]["defaultPrompt"] + [
+        case["prompt"] for cases in CASES.values() for case in cases
+    ]
+    for prompt in prompts:
+        words = re.findall(r"[\w-]+", prompt)
+        for start in range(len(words)):
+            for end in range(start + 1, len(words) + 1):
+                assert not listas.classificar(" ".join(words[start:end])).encontrada
+    for case in CASES["positive"]:
+        names = re.findall(r"substancia-exemplo-[a-z]+", case["prompt"])
+        assert names
+        assert all(not listas.classificar(name).encontrada for name in names)
+        assert "only if returned" in case["expected_behavior"]
+        assert "sem-lista as no catalog match" in case["expected_behavior"]
+    codes = {item.sigla for item in listas.listas()}
+    for cases in CASES.values():
+        for case in cases:
+            assert not codes.intersection(re.findall(r"\b[A-Z][0-9]?\b", case["expected_behavior"]))
 
 
 @pytest.mark.parametrize("path", sorted(path for path in PACKAGE.rglob("*") if path.is_file()))

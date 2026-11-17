@@ -32,7 +32,7 @@ CLI e MCP locais, além de um cliente opcional para a API de numeração da Anvi
 
 > [!TIP]
 > Usa Claude Code, Codex ou Cursor? Conecte o MCP local e peça, por exemplo,
-> "consulte clonazepam e mostre as pendências para revisão". Veja
+> "consulte substancia-exemplo-a e mostre as pendências, se retornadas". Veja
 > [Conectar agentes](#conectar-agentes).
 
 ## Início rápido
@@ -46,10 +46,10 @@ pip install sncr
 ```python
 from sncr import listas
 
-resultado = listas.classificar("clonazepam")
-assert resultado.listas == ("B1",)
-assert resultado.receituarios[0].sigla == "NRB"
-assert resultado.pendencias
+resultado = listas.classificar("substancia-exemplo-a")
+assert not resultado.encontrada
+assert resultado.listas == ()
+assert resultado.receituarios == ()
 ```
 
 O resultado traz as listas encontradas, os receituários associados, a fonte e os
@@ -59,12 +59,12 @@ adendos em `pendencias`, para revisão humana. Uma consulta não encontrada
 ## CLI
 
 Instale com `pip install sncr` ou execute sem instalar com
-`uvx sncr classificar clonazepam`.
+`uvx sncr classificar substancia-exemplo-a`.
 
 | Comando | Uso |
 | --- | --- |
-| `sncr classificar clonazepam` | Consulta uma substância e informa quantas pendências exigem revisão. |
-| `sncr classificar "isotretinoína" --json` | Retorna a classificação com os textos completos das pendências. |
+| `sncr classificar substancia-exemplo-a` | Consulta uma substância sintética, sem correspondência no catálogo. |
+| `sncr classificar "substancia-exemplo-b" --json` | Retorna a classificação sem inventar listas ou pendências. |
 | `sncr numero 2911.6-00.0000042 --json` | Decompõe uma numeração sintética, sem confirmar emissão. |
 | `sncr listas` | Lista siglas e títulos do catálogo. |
 | `sncr listas --versao` | Mostra os metadados da fonte normativa em JSON. |
@@ -329,9 +329,8 @@ não comprovam validade legal. Veja as fontes e os formatos em
 ```python
 from sncr import fhir
 
-categorias = fhir.categorias(["clonazepam"])
-assert categorias[0]["coding"][0]["code"] == "B1"
-assert categorias[0]["coding"][1]["code"] == "NRB"
+categorias = fhir.categorias(["substancia-exemplo-a"])
+assert categorias[0]["coding"][0]["code"] == "sem-lista"
 ```
 
 `fhir.categorias` gera um elemento de `MedicationRequest.category` por lista,

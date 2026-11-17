@@ -29,8 +29,8 @@
         "privacyPolicyURL": "https://app.voa.health/legal/privacidade",
         "termsOfServiceURL": "https://app.voa.health/legal/termos",
         "defaultPrompt": [
-          "Classify diazepam in the Brazilian controlled-substance lists.",
-          "Look up morphine and explain any pending review items."
+          "Classify substancia-exemplo-a in the Brazilian controlled-substance lists.",
+          "Look up substancia-exemplo-b and explain any returned pending review items."
         ],
         "brandColor": "#8236FF",
         "brandColorDark": "#A06AFF",
@@ -51,34 +51,34 @@
         "test_cases": {
           "positive": [
             {
-              "description": "Exact name",
-              "prompt": "Classify diazepam.",
+              "description": "Synthetic name",
+              "prompt": "Classify substancia-exemplo-a.",
               "tools_triggered": "sncr_classificar",
-              "expected_behavior": "Report matched lists, reference source and pending review items."
+              "expected_behavior": "Call sncr_classificar. Report lists, receituário and pendencias only if returned; otherwise explain sem-lista as no catalog match. Never assert a real category or a legal conclusion."
             },
             {
               "description": "Another substance",
-              "prompt": "Which lists include morphine?",
+              "prompt": "Which lists include substancia-exemplo-b?",
               "tools_triggered": "sncr_classificar",
-              "expected_behavior": "Classify the name and explain the returned reference categories without prescribing."
+              "expected_behavior": "Call sncr_classificar. Report lists, receituário and pendencias only if returned; otherwise explain sem-lista as no catalog match. Never assert a real category or a legal conclusion."
             },
             {
               "description": "Derivative",
-              "prompt": "Classify fluoxetine hydrochloride.",
+              "prompt": "Classify substancia-exemplo-c hydrochloride.",
               "tools_triggered": "sncr_classificar",
-              "expected_behavior": "Report any base-form match and derivative flag without asserting a legal conclusion."
+              "expected_behavior": "Call sncr_classificar. Report lists, receituário and pendencias only if returned; otherwise explain sem-lista as no catalog match. Never assert a real category or a legal conclusion."
             },
             {
               "description": "Unmatched name",
-              "prompt": "Classify substancia ficticia.",
+              "prompt": "Classify substancia-exemplo-d.",
               "tools_triggered": "sncr_classificar",
-              "expected_behavior": "Explain sem-lista as no catalog match, not a legal conclusion."
+              "expected_behavior": "Call sncr_classificar. Report lists, receituário and pendencias only if returned; otherwise explain sem-lista as no catalog match. Never assert a real category or a legal conclusion."
             },
             {
               "description": "Pending review",
-              "prompt": "Classify clonazepam and explain pending items.",
+              "prompt": "Classify substancia-exemplo-e and explain any returned pending items.",
               "tools_triggered": "sncr_classificar",
-              "expected_behavior": "Report returned pending items and require human review."
+              "expected_behavior": "Call sncr_classificar. Report lists, receituário and pendencias only if returned; otherwise explain sem-lista as no catalog match. Never assert a real category or a legal conclusion."
             }
           ],
           "negative": [
