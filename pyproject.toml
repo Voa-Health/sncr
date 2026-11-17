@@ -48,6 +48,7 @@ packages = ["src/sncr"]
 include = [
   "src/sncr",
   "docs/extracao.md",
+  "plugins/chatgpt",
   "scripts",
   "tests",
   "README.md",
