@@ -1,5 +1,9 @@
 # Changelog
 
+## Não lançado
+
+- Pacote ChatGPT separado, somente para consulta pública de substâncias via OAuth.
+
 ## 0.2.0
 
 - Codings FHIR com códigos `str` e textos curtos que sinalizam adendos e ausência de receituário.

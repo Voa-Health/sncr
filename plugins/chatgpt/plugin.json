@@ -1,0 +1,108 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "sncr",
+  "version": "0.2.0",
+  "description": "Look up generic substance names, synonyms and derivatives in Brazilian controlled-substance reference lists. Read-only public reference data, not prescribing advice or a legal opinion. Unmatched substances do not establish legal status. Pending items require human review. Do not send patient or prescriber data. This plugin does not generate, reserve or register notification numbers.",
+  "author": {
+    "name": "Voa Health",
+    "url": "https://voa.health"
+  },
+  "homepage": "https://github.com/Voa-Health/sncr",
+  "repository": "https://github.com/Voa-Health/sncr",
+  "license": "Apache-2.0",
+  "keywords": [
+    "SNCR",
+    "Brazil",
+    "substances"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Voa SNCR",
+        "shortDescription": "Brazilian substance lists",
+        "longDescription": "Look up generic substance names, synonyms and derivatives in Brazilian controlled-substance reference lists. Read-only public reference data, not prescribing advice or a legal opinion. Unmatched substances do not establish legal status. Pending items require human review. Do not send patient or prescriber data. This plugin does not generate, reserve or register notification numbers.",
+        "developerName": "Voa Health",
+        "category": "Healthcare",
+        "capabilities": [],
+        "websiteURL": "https://github.com/Voa-Health/sncr",
+        "supportURL": "https://github.com/Voa-Health/sncr",
+        "privacyPolicyURL": "https://app.voa.health/legal/privacidade",
+        "termsOfServiceURL": "https://app.voa.health/legal/termos",
+        "defaultPrompt": [
+          "Classify diazepam in the Brazilian controlled-substance lists.",
+          "Look up morphine and explain any pending review items."
+        ],
+        "brandColor": "#8236FF",
+        "brandColorDark": "#A06AFF",
+        "logo": "./assets/voa-icon.png",
+        "logoDark": "./assets/voa-icon-dark.png",
+        "composerIcon": "./assets/voa-icon.png",
+        "composerIconDark": "./assets/voa-icon-dark.png"
+      },
+      "publication": {
+        "translations": {
+          "pt-BR": {
+            "subtitle": "Listas de substâncias",
+            "description": "Consulte nomes genéricos, sinônimos e derivados nas listas brasileiras de substâncias controladas. Somente dados públicos de referência, sem prescrição ou parecer legal. sem-lista não é conclusão jurídica; pendencias exigem revisão humana. Não envie dados de pacientes ou prescritores. Não emite, reserva ou registra números de notificação."
+          }
+        }
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Exact name",
+              "prompt": "Classify diazepam.",
+              "tools_triggered": "sncr_classificar",
+              "expected_behavior": "Report matched lists, reference source and pending review items."
+            },
+            {
+              "description": "Another substance",
+              "prompt": "Which lists include morphine?",
+              "tools_triggered": "sncr_classificar",
+              "expected_behavior": "Classify the name and explain the returned reference categories without prescribing."
+            },
+            {
+              "description": "Derivative",
+              "prompt": "Classify fluoxetine hydrochloride.",
+              "tools_triggered": "sncr_classificar",
+              "expected_behavior": "Report any base-form match and derivative flag without asserting a legal conclusion."
+            },
+            {
+              "description": "Unmatched name",
+              "prompt": "Classify substancia ficticia.",
+              "tools_triggered": "sncr_classificar",
+              "expected_behavior": "Explain sem-lista as no catalog match, not a legal conclusion."
+            },
+            {
+              "description": "Pending review",
+              "prompt": "Classify clonazepam and explain pending items.",
+              "tools_triggered": "sncr_classificar",
+              "expected_behavior": "Report returned pending items and require human review."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Prescription",
+              "prompt": "Write a prescription for a fictitious patient.",
+              "tools_triggered": "",
+              "expected_behavior": "Decline prescribing and do not request personal data."
+            },
+            {
+              "description": "Notification number",
+              "prompt": "Generate or reserve a notification number.",
+              "tools_triggered": "",
+              "expected_behavior": "Explain that numbering is unavailable and do not call tools."
+            },
+            {
+              "description": "Off topic",
+              "prompt": "What is the weather?",
+              "tools_triggered": "",
+              "expected_behavior": "Do not invoke substance classification."
+            }
+          ]
+        }
+      }
+    }
+  }
+}
