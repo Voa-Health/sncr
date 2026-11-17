@@ -56,6 +56,24 @@ O resultado traz as listas encontradas, os receituários associados, a fonte e o
 adendos em `pendencias`, para revisão humana. Uma consulta não encontrada
 **não significa receita simples ou ausência de controle**.
 
+## Acesso e limites
+
+A biblioteca offline, a CLI e o MCP locais não têm cota de uso.
+O MCP hospedado em `https://api.voa.health/mcp/sncr/` aceita
+`Authorization: Bearer <chave>` com chave de organização (`sk_voa_`) ou de
+membro (`sk_user_`), com escopo `sncr:read`, criada no
+[console](https://tiss-api.voa.health/org), ou OAuth.
+
+A cota diária por organização é compartilhada entre Terminologia, RNDS e SNCR,
+por chave e OAuth: 1.000 consultas com login, 10.000 para organizações
+verificadas; organizações pessoais Pro/Trial/Ultra não têm limite.
+Ao exceder a cota, HTTP `429` informa `retry_after` quando disponível e um link
+para o console (o cabeçalho `Retry-After` também pode estar presente).
+Quando a cobrança estiver habilitada, HTTP `402` traz
+`error_name: "PAYMENT_REQUIRED"` e `metadata.billing_url` para pagamento.
+Consulte os preços públicos via
+[`GET /api/v2/product/sncr/pricing/`](https://api.voa.health/api/v2/product/sncr/pricing/).
+
 ## CLI
 
 Instale com `pip install sncr` ou execute sem instalar com
