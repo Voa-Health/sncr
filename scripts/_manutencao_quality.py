@@ -16,7 +16,7 @@ LIMITES = {
     "comment_chars": 88,
     "comment_lines": 2,
     "module_lines": 600,
-    "test_files": 8,
+    "test_files": 9,
     "test_functions": 60,
 }
 _TERMOS = re.compile(
@@ -75,6 +75,17 @@ def _verificar_texto(root: Path) -> bool:
             verificavel = re.sub(r"\bD[12]\b", "", texto_linha)
             verificavel = verificavel.replace("api-gateway.prd.apps.anvisa.gov.br", "")
             verificavel = verificavel.replace("as cliente:", "")
+            if (
+                relativo.startswith("plugins/chatgpt/")
+                or relativo == "tests/test_chatgpt_package.py"
+            ):
+                verificavel = re.sub(
+                    r"api\.voa\.health|\bvoa:sncr:read\b|#(?:8236FF|A06AFF)\b|"
+                    r"\bvoa-icon(?:-dark)?\.png\b|\bvoa\b(?!-)",
+                    "",
+                    verificavel,
+                    flags=re.IGNORECASE,
+                )
             if caminho.suffix == ".py":
                 verificavel = re.sub(r"(?:class Cliente|-> Cliente):", "", verificavel)
             if relativo == "src/sncr/cliente.py":

@@ -60,12 +60,43 @@ def test_versao_python_divergente(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "texto, permitido", [("", True), ("pacote público", True), ("\x23123", False)]
+    "texto, permitido",
+    [
+        ("", True),
+        ("pacote público", True),
+        ("\x23123", False),
+        ("\x56oa Health", "branding"),
+        ("\x76oa:sncr:read", "branding"),
+        ("api.\x76oa.health", "branding"),
+        ("\x238236FF", "branding"),
+        ("\x23A06AFF", True),
+        ("\x76oa-icon-dark.png", "branding"),
+        ("\x76oa-\x62ackend", False),
+        ("\x50RD", False),
+        ("\x55S123", False),
+        ("\x69ssue", False),
+    ],
 )
-def test_conteudo(tmp_path, monkeypatch, texto, permitido):
-    caminho = tmp_path / "README.md"
+@pytest.mark.parametrize(
+    "relativo",
+    [
+        "README.md",
+        "plugins/chatgpt/plugin.json",
+        "plugins/chatgpt/skills/sncr/SKILL.md",
+        "tests/test_chatgpt_package.py",
+        "plugins/chatgpt-extra/plugin.json",
+        "tests/test_chatgpt_package_extra.py",
+    ],
+)
+def test_conteudo(tmp_path, monkeypatch, texto, permitido, relativo):
+    caminho = tmp_path / relativo
+    caminho.parent.mkdir(parents=True, exist_ok=True)
     caminho.write_text(texto)
     monkeypatch.setattr("scripts._manutencao_quality._arquivos", lambda root: [caminho])
+    if permitido == "branding":
+        permitido = (
+            relativo.startswith("plugins/chatgpt/") or relativo == "tests/test_chatgpt_package.py"
+        )
     assert _verificar_texto(tmp_path) == permitido
 
 

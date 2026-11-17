@@ -123,6 +123,10 @@ Não busca nomes comerciais, aproximações ou equivalência química por estrut
 
 ## Conectar agentes
 
+O [pacote ChatGPT](plugins/chatgpt/) conecta o serviço remoto autenticado via OAuth
+para consultar apenas substâncias com `sncr_classificar`, sem dados pessoais e sem
+operações de numeração. É distribuído separadamente do wheel Python.
+
 O MCP local roda em stdio e oferece duas ferramentas:
 
 | Ferramenta | Uso |
