@@ -90,7 +90,7 @@ def _verificar_texto(root: Path) -> bool:
                 for url in (
                     "https://api.voa.health/mcp/sncr/",
                     "https://api.voa.health/api/v2/product/sncr/pricing/",
-                    "https://tiss-api.voa.health/org",
+                    "https://console.voa.health",
                 ):
                     verificavel = verificavel.replace(url, "")
             if caminho.suffix == ".py":
