@@ -212,8 +212,23 @@ pip install "sncr[cliente]"
 ```
 
 O extra instala `httpx`. `Cliente` exige o ambiente (`homologacao` ou `producao`)
-e um bearer do prescritor. **Não faz login gov.br, não persiste o token em arquivo
-e não repete requisições.** Feche a conexão com `with` ou `close()`.
+e recebe o bearer do prescritor pronto para uso. **Não faz login gov.br, não
+persiste o token em arquivo e não repete requisições.** Feche a conexão com
+`with` ou `close()`.
+
+### Serviços do governo
+
+As ferramentas públicas consultam dados abertos incorporados; no MCP hospedado,
+basta a chave `sk_voa_` descrita em [Acesso e limites](#acesso-e-limites). Para emitir
+numerações reais, o prescritor autentica com gov.br pelo Keycloak da Anvisa
+(OAuth2/OIDC, realm `externo` e parâmetro `kc_idp_hint=govbr`); o bearer vale
+enquanto o prescritor estiver autenticado. A Anvisa não emite credencial de parceiro nem chave de
+integração. O registro do prescritor no SNCR é criado no primeiro login quando o
+registro no CRM, CRO ou CRMV está ativo.
+
+Em homologação (`https://api-gateway.hmg.apps.anvisa.gov.br/api-sncr/api/v1/`),
+o login usa o gov.br de homologação e a numeração não exige aprovação prévia da
+Visa; em produção, a Visa aprova cada solicitação.
 
 Exemplo inteiramente sintético, com transporte simulado e **sem chamada de rede**:
 
@@ -247,8 +262,9 @@ sintéticos à produção.
 
 Para RCE/RET, use
 `numerar_controle_especial(tipo, conselho, uf, documento, cnpj)`, com
-`jws_integradora=` opcional no header `X-Jws-Integradora`. O CNPJ precisa ter
-14 dígitos e verificadores válidos. O retorno confere tipo, faixa e quantidade.
+`jws_integradora=` opcional no cabeçalho `X-Jws-Integradora`, com JWS destacado
+assinado com o e-CNPJ da integradora. O CNPJ precisa ter 14 dígitos e
+verificadores válidos. O retorno confere tipo, faixa e quantidade.
 
 ### Falhas e repetição
 
