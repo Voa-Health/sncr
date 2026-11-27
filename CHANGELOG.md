@@ -1,6 +1,6 @@
 # Changelog
 
-## Não lançado
+## 0.2.1
 
 - O cliente distingue falta de numeração confirmada (HTTP 204) de resultado incerto.
 - Documentação de acesso ao MCP hospedado, cotas compartilhadas e consulta de preços públicos.

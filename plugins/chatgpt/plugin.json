@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "sncr",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Look up generic substance names, synonyms and derivatives in Brazilian controlled-substance reference lists. Read-only public reference data, not prescribing advice or a legal opinion. Unmatched substances do not establish legal status. Pending items require human review. Do not send patient or prescriber data. This plugin does not generate, reserve or register notification numbers.",
   "author": {
     "name": "Voa Health",
