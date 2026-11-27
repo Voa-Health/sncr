@@ -61,6 +61,10 @@ class ResultadoIncerto(ErroSncr):
     """A numeração pode ter sido consumida; não repita sem reconciliação."""
 
 
+class SemNumeracaoDisponivel(ErroSncr):
+    """A API confirmou que não disponibilizou numeração."""
+
+
 class RedirecionamentoRecusado(ErroSncr):
     """Redirecionamento recusado sem reenviar credenciais."""
 
@@ -188,6 +192,8 @@ class Cliente:
             except httpx.TransportError:
                 raise ResultadoIncerto("Resultado incerto; não repita automaticamente.") from None
             status = resposta.status_code
+            if status == 204:
+                raise SemNumeracaoDisponivel("Nenhuma numeração de receita disponível.")
             if 300 <= status < 400:
                 raise RedirecionamentoRecusado("Redirecionamento recusado.")
             if status in (401, 403, 404):

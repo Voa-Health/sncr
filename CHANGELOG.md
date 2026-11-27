@@ -2,6 +2,7 @@
 
 ## Não lançado
 
+- O cliente distingue falta de numeração confirmada (HTTP 204) de resultado incerto.
 - Documentação de acesso ao MCP hospedado, cotas compartilhadas e consulta de preços públicos.
 - Pacote ChatGPT separado, somente para consulta pública de substâncias via OAuth.
 

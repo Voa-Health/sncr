@@ -17,6 +17,7 @@ from sncr.cliente import (
     RedirecionamentoRecusado,
     RequisicaoRecusada,
     ResultadoIncerto,
+    SemNumeracaoDisponivel,
     SemPermissao,
     _cnpj_valido,
 )
@@ -108,7 +109,7 @@ def test_contrato(controle, ambiente, jws, sigla):
         (308, RedirecionamentoRecusado),
         (200, ResultadoIncerto),
         (202, ResultadoIncerto),
-        (204, ResultadoIncerto),
+        (204, SemNumeracaoDisponivel),
         (429, ResultadoIncerto),
         (500, ResultadoIncerto),
         (502, ResultadoIncerto),
