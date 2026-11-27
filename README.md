@@ -253,6 +253,7 @@ Para RCE/RET, use
 ### Falhas e repetição
 
 - `ErroDeConexao`: falha antes do envio; repetir é seguro.
+- `SemNumeracaoDisponivel`: HTTP 204; a API confirmou que não disponibilizou números.
 - `ResultadoIncerto`: números podem ter sido consumidos. Reconcilie o resultado
   com o serviço antes de qualquer nova tentativa.
 - `RedirecionamentoRecusado`: o bearer não é reenviado a outro endereço.
