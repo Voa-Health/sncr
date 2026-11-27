@@ -3,6 +3,7 @@
 ## 0.2.1
 
 - O cliente distingue falta de numeração confirmada (HTTP 204) de resultado incerto.
+- O HTTP 204 agora lança `SemNumeracaoDisponivel`, que não herda de `ResultadoIncerto`; quem capturava `ResultadoIncerto` para tratar o 204 deve capturar a nova exceção.
 - Documentação de acesso ao MCP hospedado, cotas compartilhadas e consulta de preços públicos.
 - Pacote ChatGPT separado, somente para consulta pública de substâncias via OAuth.
 
